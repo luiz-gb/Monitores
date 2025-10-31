@@ -1,5 +1,6 @@
 package org.example;
 
+import jakarta.mail.MessagingException;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.io.File;
@@ -13,12 +14,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class SistemaUsuario {
-    public static void main (String[] args) throws IOException, FileNotFoundException {
+    public static void main (String[] args) throws IOException, FileNotFoundException, MessagingException {
         Scanner input = new Scanner(System.in);
 
         EmailValidator validator = EmailValidator.getInstance();
         Persistencia persistencia = new Persistencia();
-        GeradorDeRelatorios geradorRelatorios =  new GeradorDeRelatorios();
 
         CentralDeInformacoes central;
 
@@ -323,6 +323,13 @@ public class SistemaUsuario {
 
                 if (edital.inscrever(aluno, disciplina) && persistencia.salvarCentral(central)) {
                     System.out.println("Inscrição concluída com sucesso!");
+
+                    try {
+                        Mensageiro.enviarEmail(aluno.getEmail(), "Olá " + aluno.getNome() + ", você foi inscrito no edital #" + edital.getNumeroEdital());
+                    }
+                    catch (MessagingException e) {
+                        System.out.println("Erro ao enviar email!");
+                    }
                 }
 
                 else {

@@ -3,7 +3,7 @@
     <org.example.Aluno>
       <nome>Luiz Miguel</nome>
       <matricula>23829</matricula>
-      <email>luiz@gmail.com</email>
+      <email>luizmiguelgb@gmail.com</email>
       <sexo>MASCULINO</sexo>
     </org.example.Aluno>
     <org.example.Aluno>
@@ -59,8 +59,11 @@
       <listaDisciplinas>
         <org.example.Disciplina>
           <nome>História</nome>
-          <quantidadeVagas>2</quantidadeVagas>
-          <listaAlunos/>
+          <quantidadeVagas>0</quantidadeVagas>
+          <listaAlunos>
+            <org.example.Aluno reference="../../../../../../listaAlunos/org.example.Aluno"/>
+            <org.example.Aluno reference="../../../../../../listaAlunos/org.example.Aluno"/>
+          </listaAlunos>
         </org.example.Disciplina>
         <org.example.Disciplina>
           <nome>Artes</nome>
