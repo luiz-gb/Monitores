@@ -36,3 +36,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### outros ###
+
+/relatorio.pdf
+/central.xml

@@ -95,7 +95,7 @@ public class EditalMonitoria {
         String textoEdital = "Edital de Monitoria " + this.numeroEdital + " \n#Disciplinas\n";
         String status = null;
 
-        if (this.listaDisciplinas.size() > 0) {
+        if (!this.listaDisciplinas.isEmpty()) {
             for (Disciplina disciplina : listaDisciplinas) {
                 textoEdital += disciplina.getNome() + " - " + disciplina.getQuantidadeVagas() + " vagas\n";
             }

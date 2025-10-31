@@ -18,6 +18,7 @@ public class SistemaUsuario {
 
         EmailValidator validator = EmailValidator.getInstance();
         Persistencia persistencia = new Persistencia();
+        GeradorDeRelatorios geradorRelatorios =  new GeradorDeRelatorios();
 
         CentralDeInformacoes central;
 
@@ -32,7 +33,7 @@ public class SistemaUsuario {
 
             System.out.println("Verifique as opções a seguir:");
             System.out.println("1. Novo Aluno \n2. Listar Alunos\n3. Exibir Informações do Aluno\n4. Novo Edital\n5. Informar Quantidade de Editais Cadastrados\n" +
-                    "6. Exibir Informações do Edital\n7. Inscrever Aluno\n8. Sair");
+                    "6. Exibir Informações do Edital\n7. Inscrever Aluno\n8. Gerar Comprovante de Todas as Inscrições de Um Aluno\n9. Sair");
             System.out.print("Digite a opção desejada: ");
 
             Integer opcao = null;
@@ -330,6 +331,49 @@ public class SistemaUsuario {
             }
 
             else if (opcao == 8) {
+                System.out.print("Digite a matrícula do aluno: ");
+                String matricula = null;
+
+                matricula = input.nextLine();
+
+                if (matricula.strip().isEmpty()) {
+                    System.out.println("A matrícula não pode estar vazia, tente novamente!");
+                    continue;
+                } else if (!matricula.matches("\\d+") || matricula.length() != 5) {
+                    System.out.println("Matrícula inválida, digite um número de 5 caracteres!");
+                    continue;
+                }
+
+                Aluno aluno = central.recuperarAlunoPorMatricula(matricula);
+
+                if (aluno == null) {
+                    System.out.println("Aluno não encontrado, tente novamente!");
+                    continue;
+                }
+
+                System.out.print("Digite o id do edital que o(a) aluno(a) se inscreveu: ");
+                Long id = null;
+
+                try {
+                    id = Long.parseLong(input.nextLine());
+                }
+                catch (NumberFormatException e) {
+                    System.out.println("Valor inválido, tente novamente!");
+                    continue;
+                }
+
+                EditalMonitoria edital = central.recuperarEditalPorId(id);
+
+                if (edital == null) {
+                    System.out.println("Edital não encontrado, tente novamente!");
+                    continue;
+                }
+
+                GeradorDeRelatorios.obterComprovanteDeInscricoesAluno(aluno.getMatricula(), edital.getId(), central);
+                System.out.println("Relatório gerado com sucesso!");
+            }
+
+            else if (opcao == 9) {
                 System.out.println("Programa encerrado, agradecemos a preferência!");
                 break;
             }
