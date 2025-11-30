@@ -2,15 +2,16 @@ package org.example;
 
 import jakarta.mail.MessagingException;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.example.domain.*;
+import org.example.enums.Sexo;
+import org.example.util.CentralDeInformacoes;
+import org.example.util.Persistencia;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class SistemaUsuario {

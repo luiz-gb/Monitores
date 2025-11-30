@@ -1,7 +1,8 @@
-package org.example;
+package org.example.domain;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.example.util.CentralDeInformacoes;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:18.0
+    container_name: monitoriadb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monitoria
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: monitoriapgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"    # http://localhost:8080
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

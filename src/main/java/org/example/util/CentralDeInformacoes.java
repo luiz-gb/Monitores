@@ -1,4 +1,8 @@
-package org.example;
+package org.example.util;
+import org.example.domain.Disciplina;
+import org.example.domain.EditalMonitoria;
+import org.example.domain.Aluno;
+
 import java.util.ArrayList;
 import java.util.List;
 

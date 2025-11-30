@@ -1,4 +1,4 @@
-package org.example;
+package org.example.util;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;

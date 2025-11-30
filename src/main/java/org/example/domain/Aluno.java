@@ -1,4 +1,6 @@
-package org.example;
+package org.example.domain;
+
+import org.example.enums.Sexo;
 
 public class Aluno {
     private String nome;
