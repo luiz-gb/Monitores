@@ -38,4 +38,23 @@ public class AlunoRepository {
             em.close();
         }
     }
+
+    public Aluno buscarPorMatricula (String matricula) {
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            return em.createQuery("select a from Aluno a where a.matricula = :matricula", Aluno.class)
+                    .setParameter("matricula", matricula)
+                    .getSingleResult();
+        }
+
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+        finally {
+            em.close();
+        }
+    }
 }

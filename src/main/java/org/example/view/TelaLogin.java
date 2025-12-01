@@ -4,6 +4,8 @@ import org.example.model.Coordenador;
 import org.example.service.LoginService;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class TelaLogin extends BaseTela {
 
@@ -11,6 +13,7 @@ public class TelaLogin extends BaseTela {
     private JPasswordField campoSenha;
     private JButton btnEntrar;
     private LoginService loginService;
+    private JLabel rotaCadastroAluno;
 
     public TelaLogin() {
         super("Login", 400, 250);
@@ -43,6 +46,14 @@ public class TelaLogin extends BaseTela {
                 System.out.println("Coordenador logado!");
             }
         });
+
+        rotaCadastroAluno.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                TelaLogin.this.dispose();
+                new TelaCadastroAluno();
+            }
+        });
     }
 
     @Override
@@ -55,6 +66,9 @@ public class TelaLogin extends BaseTela {
 
         painel.add(new JLabel("Senha:"));
         painel.add(campoSenha);
+
+        rotaCadastroAluno = new JLabel("cadastrar-se");
+        painel.add(rotaCadastroAluno);
 
         painel.add(btnEntrar);
 

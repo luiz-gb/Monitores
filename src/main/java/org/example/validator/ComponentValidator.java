@@ -28,4 +28,19 @@ public class ComponentValidator {
             throw new CampoTamanhoInvalidoException("A senha deve ter pelo menos 6 dígitos, tente novamente!");
         }
     }
+
+    public static void validarNome (String nome) throws CampoVazioException{
+        if (nome.isBlank()) {
+            throw new CampoVazioException("O nome não pode estar vazio!");
+        }
+    }
+
+    public static void validarMatricula (String matricula) throws CampoVazioException, CampoInvalidoException{
+        if (matricula.strip().isEmpty()) {
+            throw new CampoVazioException("A matrícula não pode estar vazia, tente novamente!");
+        }
+        else if (!matricula.matches("\\d+") || matricula.length() != 5) {
+            throw new CampoInvalidoException("Matrícula inválida, digite um número de 5 caracteres!");
+        }
+    }
 }

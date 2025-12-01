@@ -30,4 +30,28 @@ public class CadastroService {
 
         coordenaorRepository.salvar(coordenadorNovo);
     }
+
+    public void cadastrarAluno (String email, String senha, String matricula, String nome) throws UsuarioJaExisteException{
+        Aluno aluno = alunoRepository.buscarPorEmail(email);
+        Coordenador coordenador = coordenaorRepository.buscarPorEmail(email);
+
+        if (aluno != null || coordenador != null) {
+            throw new UsuarioJaExisteException("O email já existe no sistema, tente novamente!");
+        }
+
+        aluno = alunoRepository.buscarPorMatricula(matricula);
+
+        if (aluno != null) {
+            throw new UsuarioJaExisteException("A matrícula já existe no sistema, tente novamente!");
+        }
+
+        Aluno alunoNovo = new Aluno();
+
+        alunoNovo.setEmail(email);
+        alunoNovo.setSenha(senha);
+        alunoNovo.setMatricula(matricula);
+        alunoNovo.setNome(nome);
+
+        alunoRepository.salvar(alunoNovo);
+    }
 }

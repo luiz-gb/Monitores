@@ -12,8 +12,8 @@ public abstract class BaseTela extends JFrame {
         setLayout(new BorderLayout());
 
         initComponents();
-        initListeners();
         initLayout();
+        initListeners();
     }
 
     public abstract void initComponents ();
