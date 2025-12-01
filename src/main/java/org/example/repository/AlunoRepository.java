@@ -20,13 +20,22 @@ public class AlunoRepository {
         }
     }
 
-//    public Aluno buscarPorMatricula (String email) {
-//        EntityManager em = JPAUtil.getEntityManager();
-//
-//        try {
-//            em.getTransaction().begin();
-//            em.persist(aluno);
-//            em.getTransaction().commit();
-//        }
-//    }
+    public Aluno buscarPorEmail (String email) {
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            return em.createQuery("select a from Aluno a where a.email = :email", Aluno.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        }
+
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+        finally {
+            em.close();
+        }
+    }
 }

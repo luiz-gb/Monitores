@@ -14,4 +14,4 @@ create table Coordenador (
 	constraint chk_email check (email like '%@%')
 );
 
-
+insert into aluno (id, email, nome, matricula, senha) values ('7b9d4686-180a-4aa7-9524-0ad2f835d8f5', 'luizmiguelgb@gmail.com', 'Luiz', '2818973', 'lm130707');

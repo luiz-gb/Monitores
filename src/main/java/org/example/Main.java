@@ -1,24 +1,22 @@
 package org.example;
 
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import org.example.view.Login;
+import org.example.repository.CoordenaorRepository;
+import org.example.view.TelaCadastroCoordenador;
+import org.example.view.TelaLogin;
 
-import javax.swing.*;
+import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
+        CoordenaorRepository coordenaorRepository = new CoordenaorRepository();
 
-//        System.out.println("Iniciando JPA...");
-
-//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("monitoriaPU");
-
-        SwingUtilities.invokeLater(Login::new);
-        Login login = new Login();
-        login.setVisible(true);
-
-//        emf.close();
-
-        System.out.println("Finalizado.");
+        if (!coordenaorRepository.verificarSeTemRegistro()) {
+            TelaCadastroCoordenador telaCadastroCoordenador = new TelaCadastroCoordenador();
+            telaCadastroCoordenador.setVisible(true);
+        }
+        else {
+            TelaLogin telaLogin = new TelaLogin();
+            telaLogin.setVisible(true);
+        }
     }
 }

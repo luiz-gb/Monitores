@@ -1,14 +1,20 @@
 package org.example.view;
+import org.example.model.Aluno;
+import org.example.model.Coordenador;
+import org.example.service.LoginService;
+
 import javax.swing.*;
 
-public class Login extends BaseTela {
+public class TelaLogin extends BaseTela {
 
     private JTextField campoEmail;
     private JPasswordField campoSenha;
     private JButton btnEntrar;
+    private LoginService loginService;
 
-    public Login() {
+    public TelaLogin() {
         super("Login", 400, 250);
+        loginService = new LoginService();
     }
 
     @Override
@@ -23,7 +29,18 @@ public class Login extends BaseTela {
         btnEntrar.addActionListener(e -> {
             String email = campoEmail.getText();
             String senha = new String(campoSenha.getPassword());
-            System.out.println("Login tentado: " + email + " / " + senha);
+
+            Object usuario = loginService.fazerLogin(email, senha);
+
+            if (usuario == null) JOptionPane.showMessageDialog(this, "Email ou senha inválidos, tente novamente!");
+
+            if (usuario instanceof Aluno) {
+                System.out.println("Aluno logado!");
+            }
+
+            else if (usuario instanceof Coordenador) {
+                System.out.println("Coordenador logado!");
+            }
         });
     }
 
