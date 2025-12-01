@@ -1,49 +1,37 @@
 package org.example.model;
 
 import jakarta.persistence.*;
-import org.example.enums.TipoPerfil;
 
 import java.util.UUID;
 
 @Entity
-@Table(name = "aluno")
-public class Aluno {
-
+@Table(name = "coordenador")
+public class Coordenador {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column
-    private String matricula;
-
-    @Column
     private String email;
-
-    @Column
-    private String nome;
 
     @Column
     private String senha;
 
-    public Aluno() {
+    public Coordenador () {}
 
-    }
-
-
-    public Aluno(String matricula, String email, String nome, String senha) {
-        this.matricula = matricula;
+    public Coordenador(UUID id, String email, String senha) {
+        this.id = id;
         this.email = email;
-        this.nome = nome;
         this.senha = senha;
     }
 
-    public String getMatricula() {
-        return matricula;
+    public UUID getId() {
+        return id;
     }
 
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -52,14 +40,6 @@ public class Aluno {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public String getSenha() {

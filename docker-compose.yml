@@ -19,7 +19,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8080:80"    # http://localhost:8080
+      - "8080:80"    # http://localhost:8080 #admin@admin.com senha: admin
     depends_on:
       - db
     restart: unless-stopped

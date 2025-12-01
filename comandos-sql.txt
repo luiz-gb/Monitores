@@ -1,0 +1,17 @@
+create table Aluno (
+	id uuid not null primary key,
+	email varchar(255) not null unique,
+	nome varchar(255),
+	matricula int unique,
+	senha varchar(255) not null,
+	constraint chk_email check (email like '%@%')
+);
+
+create table Coordenador (
+	id uuid not null primary key,
+	email varchar(255) not null unique,
+	senha varchar(255) not null,
+	constraint chk_email check (email like '%@%')
+);
+
+

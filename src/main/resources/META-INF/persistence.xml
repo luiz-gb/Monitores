@@ -5,8 +5,8 @@
              version="3.1">
 
     <persistence-unit name="monitoriaPU">
-        <class>model.Aluno</class>
-<!--        <class>model.Coordenador</class>-->
+<!--        <class>model.Aluno</class>-->
+        <class>model.Usuario</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/monitoria"/>
