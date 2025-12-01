@@ -15,6 +15,7 @@ public class TelaLogin extends BaseTela {
     public TelaLogin() {
         super("Login", 400, 250);
         loginService = new LoginService();
+        setVisible(true);
     }
 
     @Override
