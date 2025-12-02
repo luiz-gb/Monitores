@@ -2,6 +2,7 @@ package org.example.validator;
 
 import org.example.exception.CampoVazioException;
 import org.example.exception.NumeroInvalidoException;
+import org.example.exception.SomaPesosException;
 
 public class EditalValidator {
     public static void validarMaxInscricoes (String maxInscricoes) throws  CampoVazioException, NumeroInvalidoException {
@@ -33,5 +34,9 @@ public class EditalValidator {
         }
 
         if (numero < 0) throw new NumeroInvalidoException("O peso não pode ser menor que zero!");
+    }
+
+    public static void validarPesos(float peso1, float peso2) throws SomaPesosException {
+        if (peso1 + peso2 != 1) throw new SomaPesosException("A soma dos pesos deve dar 1!");
     }
 }

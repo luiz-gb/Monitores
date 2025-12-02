@@ -4,6 +4,7 @@ import org.example.domain.DisciplinaTemp;
 import org.example.exception.CampoVazioException;
 import org.example.exception.ListaVaziaException;
 import org.example.exception.NumeroInvalidoException;
+import org.example.exception.SomaPesosException;
 import org.example.model.Disciplina;
 import org.example.repository.EditalRepository;
 import org.example.service.CadastroService;
@@ -81,11 +82,12 @@ public class TelaCadastroEdital extends BaseTela{
                 EditalValidator.validarMaxInscricoes(maximoInscricoes);
                 EditalValidator.validarPeso(pesoCre);
                 EditalValidator.validarPeso(pesoMedia);
+                EditalValidator.validarPesos(Float.parseFloat(pesoCre), Float.parseFloat(pesoMedia));
 
                 cadastroService.cadastrarEdital(dataInicio, dataFinal, Integer.parseInt(maximoInscricoes), Double.parseDouble(pesoCre), Double.parseDouble(pesoMedia), listaDisciplinas);
             }
 
-            catch (NumeroInvalidoException | CampoVazioException | ListaVaziaException exception) {
+            catch (NumeroInvalidoException | CampoVazioException | ListaVaziaException | SomaPesosException exception) {
                 JOptionPane.showMessageDialog(this, exception.getMessage());
             }
 
