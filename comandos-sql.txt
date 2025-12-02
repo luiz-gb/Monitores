@@ -15,3 +15,21 @@ create table Coordenador (
 );
 
 insert into aluno (id, email, nome, matricula, senha) values ('7b9d4686-180a-4aa7-9524-0ad2f835d8f5', 'luizmiguelgb@gmail.com', 'Luiz', '2818973', 'lm130707');
+
+
+create table edital (
+	id UUID not null primary key,
+	data_inicio date not null,
+	data_final date not null,
+	maximo_inscricoes_disciplina int not null,
+	peso_cre float not null,
+	peso_media float not null
+);
+
+create table disciplina (
+	id UUID not null primary key,
+	nome_disciplina varchar(100) not null,
+	vagas_remuneradas int not null,
+	vagas_voluntarias int not null,
+	id_edital UUID not null references edital(id)
+);
