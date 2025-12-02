@@ -25,17 +25,17 @@ public class Edital {
     private int maximoInscricoesPorDisciplina;
 
     @Column(name = "peso_cre", nullable = false)
-    private float pesoCre;
+    private Double pesoCre;
 
     @Column(name = "peso_media",nullable = false)
-    private float pesoMedia;
+    private Double pesoMedia;
 
-    @OneToMany(mappedBy = "idEdital", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "edital", cascade = CascadeType.ALL)
     private List<Disciplina> listaDisciplinas;
 
     public Edital () {}
 
-    public Edital(UUID id, LocalDate dataInicio, LocalDate dataFinal, int maximoInscricoesPorDisciplina, float pesoCre, float pesoMedia) {
+    public Edital(UUID id, LocalDate dataInicio, LocalDate dataFinal, int maximoInscricoesPorDisciplina, double pesoCre, double pesoMedia) {
         this.id = id;
         this.dataInicio = dataInicio;
         this.dataFinal = dataFinal;
@@ -76,19 +76,19 @@ public class Edital {
         this.maximoInscricoesPorDisciplina = maximoInscricoesPorDisciplina;
     }
 
-    public float getPesoCre() {
+    public double getPesoCre() {
         return pesoCre;
     }
 
-    public void setPesoCre(float pesoCre) {
+    public void setPesoCre(double pesoCre) {
         this.pesoCre = pesoCre;
     }
 
-    public float getPesoMedia() {
+    public double getPesoMedia() {
         return pesoMedia;
     }
 
-    public void setPesoMedia(float pesoMedia) {
+    public void setPesoMedia(double pesoMedia) {
         this.pesoMedia = pesoMedia;
     }
 

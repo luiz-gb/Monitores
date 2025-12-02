@@ -1,18 +1,27 @@
 package org.example.service;
 
+import org.example.exception.ListaVaziaException;
 import org.example.exception.UsuarioJaExisteException;
 import org.example.model.Aluno;
 import org.example.model.Coordenador;
+import org.example.model.Disciplina;
+import org.example.model.Edital;
 import org.example.repository.AlunoRepository;
 import org.example.repository.CoordenaorRepository;
+import org.example.repository.EditalRepository;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class CadastroService {
     private AlunoRepository alunoRepository;
     private CoordenaorRepository coordenaorRepository;
+    private EditalRepository editalRepository;
 
     public CadastroService (){
         alunoRepository = new AlunoRepository();
         coordenaorRepository = new CoordenaorRepository();
+        editalRepository = new EditalRepository();
     }
 
     public void cadastrarCoordenador (String email, String senha) throws UsuarioJaExisteException{
@@ -53,5 +62,24 @@ public class CadastroService {
         alunoNovo.setNome(nome);
 
         alunoRepository.salvar(alunoNovo);
+    }
+
+    public void cadastrarEdital (LocalDate dataInicio, LocalDate dataFinal, int maximoInscricoes, double pesoCre, double pesoMedia, List<Disciplina> listaDisciplinas) throws ListaVaziaException {
+        Edital edital = new Edital();
+
+        edital.setDataInicio(dataInicio);
+        edital.setDataFinal(dataFinal);
+        edital.setListaDisciplinas(listaDisciplinas);
+        edital.setPesoCre(pesoCre);
+        edital.setPesoMedia(pesoMedia);
+        edital.setMaximoInscricoesPorDisciplina(maximoInscricoes);
+
+        if (listaDisciplinas.isEmpty()) throw new ListaVaziaException("Você deve cadastrar ao menos uma disciplina no edital");
+
+        for (Disciplina disciplina : listaDisciplinas) {
+            disciplina.setEdital(edital);
+        }
+
+        editalRepository.salvar(edital);
     }
 }

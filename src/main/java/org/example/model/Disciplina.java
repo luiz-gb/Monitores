@@ -24,16 +24,16 @@ public class Disciplina {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_edital")
-    private UUID idEdital;
+    private Edital edital;
 
     public Disciplina () {}
 
-    public Disciplina(UUID id, String nomeDisciplina, Integer vagasRemunerada, Integer vagasVoluntarias, UUID idEdital) {
+    public Disciplina(UUID id, String nomeDisciplina, Integer vagasRemunerada, Integer vagasVoluntarias, Edital idEdital) {
         this.id = id;
         this.nomeDisciplina = nomeDisciplina;
         this.vagasRemunerada = vagasRemunerada;
         this.vagasVoluntarias = vagasVoluntarias;
-        this.idEdital = idEdital;
+        this.edital = idEdital;
     }
 
     public UUID getId() {
@@ -68,11 +68,11 @@ public class Disciplina {
         this.vagasVoluntarias = vagasVoluntarias;
     }
 
-    public UUID getIdEdital() {
-        return idEdital;
+    public Edital getEdital() {
+        return edital;
     }
 
-    public void setIdEdital(UUID idEdital) {
-        this.idEdital = idEdital;
+    public void setEdital(Edital idEdital) {
+        this.edital = idEdital;
     }
 }
