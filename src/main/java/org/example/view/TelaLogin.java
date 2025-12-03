@@ -43,6 +43,7 @@ public class TelaLogin extends BaseTela {
             }
 
             else if (usuario instanceof Coordenador) {
+                dispose();
                 new TelaHomeCoordenador();
                 System.out.println("Coordenador logado!");
             }
