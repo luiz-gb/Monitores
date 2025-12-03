@@ -18,6 +18,8 @@ import java.awt.event.MouseEvent;
 public class TelaLogin extends BaseTela {
 
     private LabelTitulo labelTitulo;
+    private LabelTexto labelEmail;
+    private LabelTexto labelSenha;
     private InputTexto campoEmail;
     private InputSenha campoSenha;
     private BotaoPrimario btnEntrar;
@@ -32,6 +34,9 @@ public class TelaLogin extends BaseTela {
     @Override
     public void initComponents() {
         labelTitulo = new LabelTitulo("Login");
+
+        labelEmail = new LabelTexto("Email:");
+        labelSenha = new LabelTexto("Senha:");
 
         campoEmail = new InputTexto();
         campoSenha = new InputSenha();
@@ -74,16 +79,14 @@ public class TelaLogin extends BaseTela {
         labelTitulo.setBounds(0, 60, 400, 30);
         add(labelTitulo);
 
-        LabelTexto lblEmail = new LabelTexto("Email:");
-        lblEmail.setBounds(50, 120, 300, 20);
-        add(lblEmail);
+        labelEmail.setBounds(50, 120, 300, 20);
+        add(labelEmail);
 
         campoEmail.setBounds(50, 145, 300, 40);
         add(campoEmail);
 
-        LabelTexto lblSenha = new LabelTexto("Senha:");
-        lblSenha.setBounds(50, 200, 300, 20);
-        add(lblSenha);
+        labelSenha.setBounds(50, 200, 300, 20);
+        add(labelSenha);
 
         campoSenha.setBounds(50, 225, 300, 40);
         add(campoSenha);

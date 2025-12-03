@@ -71,7 +71,7 @@ public class TelaHomeCoordenador extends BaseTela {
                 int coluna = tabelaEditais.getSelectedColumn();
 
                 if (coluna == 4 && linha >= 0) {
-                    System.out.println("Clicou em Detalhar na linha " + linha);
+                    new TelaDetalharEditalSemResultado();
                 }
             }
         });

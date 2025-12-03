@@ -90,7 +90,7 @@ public class TelaCadastroAluno extends BaseTela {
 
     @Override
     public void initLayout() {
-        labelTitulo.setBounds(0, 60, 400, 30);
+        labelTitulo.setBounds(0, 30, 400, 30);
         add(labelTitulo);
 
         labelNome.setBounds(50, 70, 300, 20);

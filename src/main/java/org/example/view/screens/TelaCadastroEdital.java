@@ -265,10 +265,10 @@ public class TelaCadastroEdital extends BaseTela {
         scrollPane.setBounds(20, 345, 440, 135);
         add(scrollPane);
 
-        btnCancelar.setBounds(20, 500, 150, 40);
+        btnCancelar.setBounds(20, 500, 210, 40);
         add(btnCancelar);
 
-        btnSalvar.setBounds(180, 500, 280, 40);
+        btnSalvar.setBounds(250, 500, 210, 40);
         add(btnSalvar);
     }
 }
