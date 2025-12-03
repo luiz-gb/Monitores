@@ -33,3 +33,12 @@ create table disciplina (
 	vagas_voluntarias int not null,
 	id_edital UUID not null references edital(id)
 );
+
+create table inscricao (
+	id uuid not null primary key,
+	id_aluno uuid not null references aluno(id),
+	id_disciplina uuid not null references disciplina(id),
+	data_inscricao timestamp default now(),
+	resultado_inscricao varchar(50) not null,
+	constraint chk_resultado_aluno check (resultado_inscricao in ('APROVADO', 'REPROVADO', 'PENDENTE'))
+);
