@@ -1,12 +1,11 @@
-package org.example.view.components;
-
+package org.example.view.components.tables;
 
 import org.example.model.Edital;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
-public class EditalTableModel extends AbstractTableModel {
+public class ModeloTabelaEdital extends AbstractTableModel {
 
     private final String[] colunas = {
             "Id", "Data Início", "Data Fim", "Status", "Detalhar"
@@ -14,7 +13,7 @@ public class EditalTableModel extends AbstractTableModel {
 
     private List<Edital> editais;
 
-    public EditalTableModel(List<Edital> editais) {
+    public ModeloTabelaEdital(List<Edital> editais) {
         this.editais = editais;
     }
 

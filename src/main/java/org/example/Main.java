@@ -1,10 +1,8 @@
 package org.example;
 
 import org.example.repository.CoordenaorRepository;
-import org.example.view.TelaCadastroCoordenador;
-import org.example.view.TelaLogin;
-
-import java.util.UUID;
+import org.example.view.screens.TelaCadastroCoordenador;
+import org.example.view.screens.TelaLogin;
 
 public class Main {
     public static void main(String[] args) {
