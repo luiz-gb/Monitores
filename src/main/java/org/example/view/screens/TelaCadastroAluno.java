@@ -30,6 +30,7 @@ public class TelaCadastroAluno extends BaseTela {
     public TelaCadastroAluno() {
         super("Cadastro de Aluno", 400, 500);
         cadastroService = new CadastroService();
+        initView();
     }
 
     @Override

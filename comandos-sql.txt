@@ -42,3 +42,5 @@ create table inscricao (
 	resultado_inscricao varchar(50) not null,
 	constraint chk_resultado_aluno check (resultado_inscricao in ('APROVADO', 'REPROVADO', 'PENDENTE'))
 );
+
+alter table edital add column encerrado boolean default false;

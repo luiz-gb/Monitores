@@ -23,6 +23,7 @@ public class TelaCadastroCoordenador extends BaseTela {
     public TelaCadastroCoordenador() {
         super("Cadastro de Coordenador", 400, 500);
         cadastroService = new CadastroService();
+        initView();
     }
 
     @Override

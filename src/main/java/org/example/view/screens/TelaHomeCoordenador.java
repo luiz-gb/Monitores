@@ -17,6 +17,7 @@ import java.util.List;
 public class TelaHomeCoordenador extends BaseTela {
 
     private BarraSuperior header;
+    List<Edital> listaEditais;
     private JLabel labelTituloSecao;
     private TabelaPadrao tabelaEditais;
     private JScrollPane scrollPane;
@@ -26,6 +27,8 @@ public class TelaHomeCoordenador extends BaseTela {
     public TelaHomeCoordenador() {
         super("Home Coordenador", 500, 600);
         getContentPane().setBackground(Color.WHITE);
+        initView();
+
     }
 
     @Override
@@ -41,7 +44,7 @@ public class TelaHomeCoordenador extends BaseTela {
         labelTituloSecao.setFont(new Font("Arial", Font.BOLD, 18));
         labelTituloSecao.setForeground(new Color(30, 30, 30));
 
-        List<Edital> listaEditais = homeService.retornarEditais();
+        listaEditais = homeService.retornarEditais();
 
         tabelaEditais = new TabelaPadrao(new ModeloTabelaEdital(listaEditais));
 
@@ -71,7 +74,7 @@ public class TelaHomeCoordenador extends BaseTela {
                 int coluna = tabelaEditais.getSelectedColumn();
 
                 if (coluna == 4 && linha >= 0) {
-                    new TelaDetalharEditalSemResultado();
+                    new TelaDetalharEditalSemResultado(listaEditais.get(linha));
                 }
             }
         });

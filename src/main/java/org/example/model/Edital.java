@@ -21,8 +21,8 @@ public class Edital {
     @Column(name = "data_final", nullable = false)
     private LocalDate dataFinal;
 
-    @Column(name = "maximo_inscricoes_disciplina", nullable = false)
-    private int maximoInscricoesPorDisciplina;
+    @Column(name = "maximo_inscricoes_aluno", nullable = false)
+    private int maximoInscricoesPorAluno;
 
     @Column(name = "peso_cre", nullable = false)
     private Double pesoCre;
@@ -30,16 +30,19 @@ public class Edital {
     @Column(name = "peso_media",nullable = false)
     private Double pesoMedia;
 
-    @OneToMany(mappedBy = "edital", cascade = CascadeType.ALL)
+    @Column
+    private Boolean encerrado;
+
+    @OneToMany(mappedBy = "edital", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Disciplina> listaDisciplinas;
 
     public Edital () {}
 
-    public Edital(UUID id, LocalDate dataInicio, LocalDate dataFinal, int maximoInscricoesPorDisciplina, double pesoCre, double pesoMedia) {
+    public Edital(UUID id, LocalDate dataInicio, LocalDate dataFinal, int maximoInscricoesPorAluno, double pesoCre, double pesoMedia) {
         this.id = id;
         this.dataInicio = dataInicio;
         this.dataFinal = dataFinal;
-        this.maximoInscricoesPorDisciplina = maximoInscricoesPorDisciplina;
+        this.maximoInscricoesPorAluno = maximoInscricoesPorAluno;
         this.pesoCre = pesoCre;
         this.pesoMedia = pesoMedia;
     }
@@ -68,12 +71,12 @@ public class Edital {
         this.dataFinal = dataFinal;
     }
 
-    public int getMaximoInscricoesPorDisciplina() {
-        return maximoInscricoesPorDisciplina;
+    public int getMaximoInscricoesPorAluno() {
+        return maximoInscricoesPorAluno;
     }
 
-    public void setMaximoInscricoesPorDisciplina(int maximoInscricoesPorDisciplina) {
-        this.maximoInscricoesPorDisciplina = maximoInscricoesPorDisciplina;
+    public void setMaximoInscricoesPorAluno(int maximoInscricoesPorAluno) {
+        this.maximoInscricoesPorAluno = maximoInscricoesPorAluno;
     }
 
     public double getPesoCre() {
@@ -98,5 +101,13 @@ public class Edital {
 
     public void setListaDisciplinas(List<Disciplina> listaDisciplinas) {
         this.listaDisciplinas = listaDisciplinas;
+    }
+
+    public Boolean getEncerrado() {
+        return encerrado;
+    }
+
+    public void setEncerrado(Boolean encerrado) {
+        this.encerrado = encerrado;
     }
 }

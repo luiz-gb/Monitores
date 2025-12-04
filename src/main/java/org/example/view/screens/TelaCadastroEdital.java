@@ -2,6 +2,7 @@ package org.example.view.screens;
 
 import org.example.exception.*;
 import org.example.model.Disciplina;
+import org.example.model.Edital;
 import org.example.service.CadastroService;
 import org.example.validator.DisciplinaValidator;
 import org.example.validator.EditalValidator;
@@ -21,6 +22,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,10 +59,21 @@ public class TelaCadastroEdital extends BaseTela {
     private BotaoSecundario btnCancelar;
     private CadastroService cadastroService;
 
+    private Edital edital;
+
     public TelaCadastroEdital() {
         super("Cadastro de Edital", 500, 600);
         cadastroService = new CadastroService();
         listaDisciplinas = new ArrayList<>();
+        initView();
+    }
+
+    public TelaCadastroEdital(Edital edital) {
+        super("Cadastro de Edital", 500, 600);
+        cadastroService = new CadastroService();
+        listaDisciplinas = new ArrayList<>();
+        this.edital = edital;
+        initView();
     }
 
     @Override
@@ -104,6 +117,28 @@ public class TelaCadastroEdital extends BaseTela {
 
         btnSalvar = new BotaoPrimario("Salvar Edital");
         btnCancelar = new BotaoSecundario("Cancelar");
+
+        if (edital != null) {
+            DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            campoDataFinal.setText(edital.getDataFinal().format(formatadorData));
+            campoDataInicio.setText(edital.getDataInicio().format(formatadorData));
+            campoPesoCre.setText(String.valueOf(edital.getPesoCre()));
+            campoPesoMedia.setText(String.valueOf(edital.getPesoMedia()));
+            campoMaxInscricoes.setText(String.valueOf(edital.getMaximoInscricoesPorAluno()));
+
+            if (!edital.getListaDisciplinas().isEmpty()) edital.getListaDisciplinas().forEach(e -> {
+                Object[] linha = {e.getNomeDisciplina(), e.getVagasRemunerada(), e.getVagasVoluntarias(), "Remover"};
+                tableModel.addRow(linha);
+
+                Disciplina disciplinaNova = new Disciplina();
+                disciplinaNova.setNomeDisciplina(e.getNomeDisciplina());
+                disciplinaNova.setVagasVoluntarias(e.getVagasVoluntarias());
+                disciplinaNova.setVagasRemunerada(e.getVagasRemunerada());
+
+                listaDisciplinas.add(disciplinaNova);
+            });
+        }
     }
 
     @Override
@@ -177,10 +212,6 @@ public class TelaCadastroEdital extends BaseTela {
             EditalValidator.validarPeso(pesoCre);
             EditalValidator.validarPeso(pesoMedia);
             EditalValidator.validarPesos(Float.parseFloat(pesoCre), Float.parseFloat(pesoMedia));
-
-            if (listaDisciplinas.isEmpty()) {
-                throw new ListaVaziaException("O edital precisa ter pelo menos uma disciplina.");
-            }
 
             cadastroService.cadastrarEdital(dataInicio, dataFinal, Integer.parseInt(maxInscricoes),
                     Double.parseDouble(pesoCre), Double.parseDouble(pesoMedia), listaDisciplinas);

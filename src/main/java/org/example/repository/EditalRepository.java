@@ -22,6 +22,20 @@ public class EditalRepository {
         }
     }
 
+    public void editar (Edital edital) {
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            em.merge(edital);
+            em.getTransaction().commit();
+        }
+
+        finally {
+            em.close();
+        }
+    }
+
     public List<Edital> retornarTodosEditais () {
         EntityManager em = JPAUtil.getEntityManager();
 

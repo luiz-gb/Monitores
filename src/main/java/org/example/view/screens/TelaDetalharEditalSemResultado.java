@@ -1,5 +1,9 @@
 package org.example.view.screens;
 
+import org.example.exception.ListaVaziaException;
+import org.example.model.Edital;
+import org.example.service.CadastroService;
+import org.example.validator.EditalValidator;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoPrimario;
 import org.example.view.components.buttons.BotaoSecundario;
@@ -14,22 +18,30 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class TelaDetalharEditalSemResultado extends BaseTela {
 
     private InputData campoDataInicio, campoDataFim;
     private InputTexto campoMaxInscricoes, campoPesoCre, campoPesoMedia;
-
+    private Edital edital;
+    private CadastroService cadastroService;
     private TabelaPadrao tabelaDisciplinas;
     private TabelaPadrao tabelaAlunos;
+    private DefaultTableModel modelDisc;
     private JScrollPane scrollDisciplinas, scrollAlunos;
     private InputComboBox<String> comboDisciplinas;
 
     private BotaoSecundario btnVoltar, btnCancelarEdicao;
     private BotaoPrimario btnClonar, btnEncerrar, btnEditar, btnSalvarEdicao;
 
-    public TelaDetalharEditalSemResultado() {
+    public TelaDetalharEditalSemResultado(Edital edital) {
         super("Detalhes do Edital", 600, 750);
+        this.edital = edital;
+        cadastroService = new CadastroService();
+        initView();
     }
 
     @Override
@@ -41,13 +53,16 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         configurarInputLeituraInicial(campoDataFim);
 
         campoMaxInscricoes = criarInputTextoLeitura();
+
         campoPesoCre = criarInputTextoLeitura();
+
         campoPesoMedia = criarInputTextoLeitura();
 
-        String[] colDisc = {"Disciplina", "Vagas Rem.", "Vagas Vol.", "Situação", "Ação"};
-        DefaultTableModel modelDisc = new DefaultTableModel(colDisc, 0);
+        String[] colDisc = {"Disciplina", "Vagas Rem.", "Vagas Vol.", "Ação"};
+        modelDisc = new DefaultTableModel(colDisc, 0);
+
         tabelaDisciplinas = new TabelaPadrao(modelDisc);
-        tabelaDisciplinas.transformarColunaEmLink(4, Color.RED);
+        tabelaDisciplinas.transformarColunaEmLink(3, Color.RED);
 
         scrollDisciplinas = new JScrollPane(tabelaDisciplinas);
         estilizarScroll(scrollDisciplinas);
@@ -70,6 +85,8 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         btnSalvarEdicao = new BotaoPrimario("Salvar");
         btnCancelarEdicao = new BotaoSecundario("Cancelar");
 
+        carregarValoresComponents();
+
         btnSalvarEdicao.setVisible(false);
         btnCancelarEdicao.setVisible(false);
     }
@@ -85,7 +102,6 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         input.setBackground(new Color(230, 230, 230));
     }
 
-    // Pequena correção: nome do método estava em inglês acima, ajustando para consistência
     private void configurarInputLeituraInicial(JTextComponent input) {
         input.setEditable(false);
         input.setBackground(new Color(230, 230, 230));
@@ -104,8 +120,6 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
     private void alternarModoEdicao(boolean editando) {
         configurarInput(campoDataInicio, editando);
         configurarInput(campoDataFim, editando);
-
-        configurarInput(campoMaxInscricoes, editando);
         configurarInput(campoPesoCre, editando);
         configurarInput(campoPesoMedia, editando);
 
@@ -122,17 +136,46 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         }
     }
 
+    private void carregarValoresComponents () {
+        DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        campoDataInicio.setText(edital.getDataInicio().format(formatadorData));
+        campoDataFim.setText(edital.getDataFinal().format(formatadorData));
+        campoMaxInscricoes.setText(String.valueOf(edital.getMaximoInscricoesPorAluno()));
+        campoPesoCre.setText(String.valueOf(edital.getPesoCre()));
+        campoPesoMedia.setText(String.valueOf(edital.getPesoMedia()));
+
+        modelDisc.setRowCount(0);
+
+        edital.getListaDisciplinas().forEach(e -> {
+            Object[] linha = {e.getNomeDisciplina(), e.getVagasRemunerada(), e.getVagasVoluntarias(), "Remover"};
+            modelDisc.addRow(linha);
+        });
+    }
+
     @Override
     public void initListeners() {
         btnVoltar.addActionListener(e -> dispose());
         btnEditar.addActionListener(e -> alternarModoEdicao(true));
 
-        btnCancelarEdicao.addActionListener(e -> alternarModoEdicao(false));
+        btnCancelarEdicao.addActionListener(e -> {
+            alternarModoEdicao(false);
+            carregarValoresComponents();
+        });
 
         btnSalvarEdicao.addActionListener(e -> {
-            System.out.println("Salvando...");
-            alternarModoEdicao(false);
-            JOptionPane.showMessageDialog(this, "Alterações salvas com sucesso!");
+            salvarEdital();
+        });
+
+        btnClonar.addActionListener(e -> {
+            dispose();
+            new TelaCadastroEdital(edital);
+        });
+
+        btnEncerrar.addActionListener(e -> {
+            edital.setEncerrado(true);
+            cadastroService.salvarEdital(edital);
+            JOptionPane.showMessageDialog(this, "Edital encerrado com sucesso!");
         });
     }
 
@@ -204,4 +247,42 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         btnSalvarEdicao.setBounds(435, 640, 125, 40);
         add(btnSalvarEdicao);
     }
+
+    private void salvarEdital() {
+        try {
+            String maxInscricoes = campoMaxInscricoes.getText();
+            String pesoCre = campoPesoCre.getText();
+            String pesoMedia = campoPesoMedia.getText();
+
+            LocalDate dataInicio = campoDataInicio.getData();
+            LocalDate dataFinal = campoDataFim.getData();
+
+            EditalValidator.validarMaxInscricoes(maxInscricoes);
+            EditalValidator.validarPeso(pesoCre);
+            EditalValidator.validarPeso(pesoMedia);
+            EditalValidator.validarPesos(Float.parseFloat(pesoCre), Float.parseFloat(pesoMedia));
+
+            edital.setMaximoInscricoesPorAluno(Integer.parseInt(maxInscricoes));
+            edital.setPesoCre(Double.parseDouble(pesoCre));
+            edital.setPesoMedia(Double.parseDouble(pesoMedia));
+            edital.setDataInicio(dataInicio);
+            edital.setDataFinal(dataFinal);
+
+//            if (listaDisciplinas.isEmpty()) {
+//                throw new ListaVaziaException("O edital precisa ter pelo menos uma disciplina.");
+//            }
+
+            cadastroService.salvarEdital(edital);
+            carregarValoresComponents();
+            alternarModoEdicao(false);
+
+            JOptionPane.showMessageDialog(this, "Edital alterado com sucesso!");
+
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this, "Data inválida ou incompleta.", "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
 }

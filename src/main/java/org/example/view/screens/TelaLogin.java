@@ -29,6 +29,7 @@ public class TelaLogin extends BaseTela {
     public TelaLogin() {
         super("Login", 400, 500);
         loginService = new LoginService();
+        initView();
     }
 
     @Override
