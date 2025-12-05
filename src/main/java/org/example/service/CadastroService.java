@@ -73,6 +73,7 @@ public class CadastroService {
         edital.setPesoCre(pesoCre);
         edital.setPesoMedia(pesoMedia);
         edital.setMaximoInscricoesPorAluno(maximoInscricoes);
+        edital.setEncerrado(false);
 
         if (listaDisciplinas.isEmpty()) throw new ListaVaziaException("Você deve cadastrar ao menos uma disciplina no edital");
 

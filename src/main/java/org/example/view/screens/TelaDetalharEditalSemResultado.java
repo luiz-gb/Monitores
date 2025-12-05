@@ -35,7 +35,7 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
     private InputComboBox<String> comboDisciplinas;
 
     private BotaoSecundario btnVoltar, btnCancelarEdicao;
-    private BotaoPrimario btnClonar, btnEncerrar, btnEditar, btnSalvarEdicao;
+    private BotaoPrimario btnClonar, btnEncerrar, btnEditar, btnSalvarEdicao, btnCancelarEncerramento;
 
     public TelaDetalharEditalSemResultado(Edital edital) {
         super("Detalhes do Edital", 600, 750);
@@ -81,12 +81,14 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         btnClonar = new BotaoPrimario("Clonar Edital");
         btnEncerrar = new BotaoPrimario("Encerrar Edital");
         btnEditar = new BotaoPrimario("Editar Edital");
+        btnCancelarEncerramento = new BotaoPrimario("Cancelar Encerramento");
 
         btnSalvarEdicao = new BotaoPrimario("Salvar");
         btnCancelarEdicao = new BotaoSecundario("Cancelar");
 
         carregarValoresComponents();
 
+        btnCancelarEncerramento.setVisible(false);
         btnSalvarEdicao.setVisible(false);
         btnCancelarEdicao.setVisible(false);
     }
@@ -95,11 +97,6 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         InputTexto input = new InputTexto();
         configurarInputLeituraInicial(input);
         return input;
-    }
-
-    private void configuringInputLeituraInicial(JTextComponent input) {
-        input.setEditable(false);
-        input.setBackground(new Color(230, 230, 230));
     }
 
     private void configurarInputLeituraInicial(JTextComponent input) {
@@ -117,9 +114,19 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         input.setBackground(editavel ? Color.WHITE : new Color(230, 230, 230));
     }
 
+
     private void alternarModoEdicao(boolean editando) {
-        configurarInput(campoDataInicio, editando);
+        if (editando) {
+            JOptionPane.showMessageDialog(this, "Edição habilitada!");
+        }
+
+        if (LocalDate.now().isBefore(edital.getDataInicio())) {
+            configurarInput(campoDataInicio, editando);
+        }
+
         configurarInput(campoDataFim, editando);
+
+        configurarInput(campoMaxInscricoes, editando);
         configurarInput(campoPesoCre, editando);
         configurarInput(campoPesoMedia, editando);
 
@@ -128,11 +135,15 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         btnEncerrar.setVisible(!editando);
         btnEditar.setVisible(!editando);
 
+        btnCancelarEncerramento.setVisible(editando);
         btnCancelarEdicao.setVisible(editando);
         btnSalvarEdicao.setVisible(editando);
 
-        if (editando) {
-            JOptionPane.showMessageDialog(this, "Edição habilitada!");
+        if (edital.getEncerrado()) {
+            System.out.println("Entrando");
+            btnCancelarEdicao.setBounds(100, 640, 125, 40);
+            btnCancelarEncerramento.setBounds(230, 640, 200, 40);
+            btnSalvarEdicao.setBounds(435, 640, 125, 40);
         }
     }
 
@@ -164,7 +175,7 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         });
 
         btnSalvarEdicao.addActionListener(e -> {
-            salvarEdital();
+            salvarEdital(edital.getMaximoInscricoesPorAluno());
         });
 
         btnClonar.addActionListener(e -> {
@@ -176,6 +187,20 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
             edital.setEncerrado(true);
             cadastroService.salvarEdital(edital);
             JOptionPane.showMessageDialog(this, "Edital encerrado com sucesso!");
+        });
+
+        btnCancelarEncerramento.addActionListener(e -> {
+            try {
+                EditalValidator.validarCancelarEncerramentoEdital(edital.getDataFinal());
+                edital.setEncerrado(false);
+                cadastroService.salvarEdital(edital);
+                JOptionPane.showMessageDialog(this, "Cancelamento de encerramento de edital concluído!");
+                new TelaDetalharEditalSemResultado(edital);
+            }
+
+            catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
+            }
         });
     }
 
@@ -242,13 +267,15 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         add(btnEditar);
 
         btnCancelarEdicao.setBounds(300, 640, 125, 40);
-        add(btnCancelarEdicao);
-
         btnSalvarEdicao.setBounds(435, 640, 125, 40);
+
+        add(btnCancelarEncerramento);
+
+        add(btnCancelarEdicao);
         add(btnSalvarEdicao);
     }
 
-    private void salvarEdital() {
+    private void salvarEdital(int maximoInscricoesAntigo) {
         try {
             String maxInscricoes = campoMaxInscricoes.getText();
             String pesoCre = campoPesoCre.getText();
@@ -257,7 +284,18 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
             LocalDate dataInicio = campoDataInicio.getData();
             LocalDate dataFinal = campoDataFim.getData();
 
+            if (LocalDate.now().isBefore(edital.getDataInicio())) {
+                EditalValidator.validarDataInicio(dataInicio);
+            }
+
+            if (!edital.getDataFinal().equals(dataFinal)) {
+                EditalValidator.validarDataFinal(dataFinal);
+            }
+
+            EditalValidator.validarDatas(dataInicio, dataFinal);
+
             EditalValidator.validarMaxInscricoes(maxInscricoes);
+            EditalValidator.validarMaxInscricoesEditar(maximoInscricoesAntigo, Integer.parseInt(maxInscricoes));
             EditalValidator.validarPeso(pesoCre);
             EditalValidator.validarPeso(pesoMedia);
             EditalValidator.validarPesos(Float.parseFloat(pesoCre), Float.parseFloat(pesoMedia));
@@ -267,10 +305,6 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
             edital.setPesoMedia(Double.parseDouble(pesoMedia));
             edital.setDataInicio(dataInicio);
             edital.setDataFinal(dataFinal);
-
-//            if (listaDisciplinas.isEmpty()) {
-//                throw new ListaVaziaException("O edital precisa ter pelo menos uma disciplina.");
-//            }
 
             cadastroService.salvarEdital(edital);
             carregarValoresComponents();
