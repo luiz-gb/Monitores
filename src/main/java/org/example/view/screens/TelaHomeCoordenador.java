@@ -28,7 +28,6 @@ public class TelaHomeCoordenador extends BaseTela {
         super("Home Coordenador", 500, 600);
         getContentPane().setBackground(Color.WHITE);
         initView();
-
     }
 
     @Override

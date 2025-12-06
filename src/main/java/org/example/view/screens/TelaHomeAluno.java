@@ -38,7 +38,7 @@ public class TelaHomeAluno extends BaseTela {
     public void initComponents() {
         homeService = new HomeService();
 
-        header = new BarraSuperior("Aluno", true, () -> {
+        header = new BarraSuperior("Aluno", false, () -> {
             dispose();
             new TelaLogin();
         });
@@ -69,7 +69,11 @@ public class TelaHomeAluno extends BaseTela {
                 int coluna = tabelaEditais.getSelectedColumn();
 
                 if (coluna == 4 && linha >= 0) {
-                    new TelaDetalharEditalSemResultadoAluno(listaEditais.get(linha), aluno);
+                    Edital editalSelecionado = listaEditais.get(linha);
+
+                    TelaDetalharEditalSemResultadoAluno telaDetalhes =  new TelaDetalharEditalSemResultadoAluno(editalSelecionado, aluno);
+                    telaDetalhes.setVisible(true);
+                    dispose();
                 }
             }
         });
