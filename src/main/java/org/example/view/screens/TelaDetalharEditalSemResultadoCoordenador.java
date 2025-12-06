@@ -191,7 +191,10 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
 
     @Override
     public void initListeners() {
-        btnVoltar.addActionListener(e -> dispose());
+        btnVoltar.addActionListener(e -> {
+            dispose();
+            new TelaHomeCoordenador();
+        });
         btnEditar.addActionListener(e -> alternarModoEdicao(true));
 
         btnCancelarEdicao.addActionListener(e -> {
