@@ -59,7 +59,7 @@ public class TelaLogin extends BaseTela {
                 JOptionPane.showMessageDialog(this, "Email ou senha inválidos, tente novamente!");
             } else if (usuario instanceof Aluno) {
                 dispose();
-                System.out.println("Aluno logado!");
+                new TelaHomeAluno((Aluno) usuario);
             } else if (usuario instanceof Coordenador) {
                 dispose();
                 new TelaHomeCoordenador();

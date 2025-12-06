@@ -1,8 +1,10 @@
 package org.example.view.screens;
 
-import org.example.exception.ListaVaziaException;
 import org.example.model.Edital;
+import org.example.model.Inscricao;
 import org.example.service.CadastroService;
+import org.example.service.InscricaoService;
+import org.example.util.CalcularPontuacao;
 import org.example.validator.EditalValidator;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoPrimario;
@@ -18,29 +20,35 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class TelaDetalharEditalSemResultado extends BaseTela {
+public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
 
     private InputData campoDataInicio, campoDataFim;
     private InputTexto campoMaxInscricoes, campoPesoCre, campoPesoMedia;
     private Edital edital;
     private CadastroService cadastroService;
+    private InscricaoService inscricaoService;
     private TabelaPadrao tabelaDisciplinas;
     private TabelaPadrao tabelaAlunos;
     private DefaultTableModel modelDisc;
+    private DefaultTableModel modelAlunos;
     private JScrollPane scrollDisciplinas, scrollAlunos;
     private InputComboBox<String> comboDisciplinas;
 
     private BotaoSecundario btnVoltar, btnCancelarEdicao;
     private BotaoPrimario btnClonar, btnEncerrar, btnEditar, btnSalvarEdicao, btnCancelarEncerramento;
 
-    public TelaDetalharEditalSemResultado(Edital edital) {
+    public TelaDetalharEditalSemResultadoCoordenador(Edital edital) {
         super("Detalhes do Edital", 600, 750);
         this.edital = edital;
+
+        inscricaoService = new InscricaoService();
         cadastroService = new CadastroService();
+
         initView();
     }
 
@@ -60,7 +68,6 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
 
         String[] colDisc = {"Disciplina", "Vagas Rem.", "Vagas Vol.", "Ação"};
         modelDisc = new DefaultTableModel(colDisc, 0);
-
         tabelaDisciplinas = new TabelaPadrao(modelDisc);
         tabelaDisciplinas.transformarColunaEmLink(3, Color.RED);
 
@@ -70,8 +77,8 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
         comboDisciplinas = new InputComboBox<>();
         comboDisciplinas.addItem("Selecione a Disciplina...");
 
-        String[] colAlunos = {"Posição", "Aluno", "CRE", "Média", "Pontuação", "Situação", "Desistiu"};
-        DefaultTableModel modelAlunos = new DefaultTableModel(colAlunos, 0);
+        String[] colAlunos = {"Ordem Inscricção", "Aluno", "CRE", "Média", "Pontuação", "Status"};
+        modelAlunos = new DefaultTableModel(colAlunos, 0);
         tabelaAlunos = new TabelaPadrao(modelAlunos);
 
         scrollAlunos = new JScrollPane(tabelaAlunos);
@@ -162,6 +169,23 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
             Object[] linha = {e.getNomeDisciplina(), e.getVagasRemunerada(), e.getVagasVoluntarias(), "Remover"};
             modelDisc.addRow(linha);
         });
+
+        List<Inscricao> listaInscricoes = inscricaoService.retornarTodasInscricoes();
+
+        if (!listaInscricoes.isEmpty()) {
+            listaInscricoes.forEach(e -> {
+                Object[] linha = {
+                        String.valueOf(listaInscricoes.indexOf(e) + 1),
+                        e.getAluno().getNome(),
+                        String.valueOf(e.getAlunoCRE()),
+                        String.valueOf(e.getAlunoMedia()),
+                        String.valueOf(CalcularPontuacao.calcularPontuacaoAluno(edital.getPesoCre(), edital.getPesoMedia(), e.getAlunoCRE(), e.getAlunoMedia())),
+                        String.valueOf(e.getResultadoInscricao())
+                };
+
+                modelAlunos.addRow(linha);
+            });
+        }
     }
 
     @Override
@@ -195,7 +219,7 @@ public class TelaDetalharEditalSemResultado extends BaseTela {
                 edital.setEncerrado(false);
                 cadastroService.salvarEdital(edital);
                 JOptionPane.showMessageDialog(this, "Cancelamento de encerramento de edital concluído!");
-                new TelaDetalharEditalSemResultado(edital);
+                new TelaDetalharEditalSemResultadoCoordenador(edital);
             }
 
             catch (Exception ex) {

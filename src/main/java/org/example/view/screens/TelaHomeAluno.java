@@ -1,12 +1,12 @@
 package org.example.view.screens;
 
+import org.example.model.Aluno;
 import org.example.model.Edital;
 import org.example.service.HomeService;
-import org.example.view.components.header.BarraSuperior;
 import org.example.view.components.base.BaseTela;
+import org.example.view.components.header.BarraSuperior;
 import org.example.view.components.tables.ModeloTabelaEdital;
 import org.example.view.components.tables.TabelaPadrao;
-import org.example.view.components.links.LinkTexto;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,19 +14,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class TelaHomeCoordenador extends BaseTela {
+public class TelaHomeAluno extends BaseTela {
 
     private BarraSuperior header;
     List<Edital> listaEditais;
     private JLabel labelTituloSecao;
     private TabelaPadrao tabelaEditais;
     private JScrollPane scrollPane;
-    private LinkTexto linkCadastroEdital;
     private HomeService homeService;
+    private Aluno aluno;
 
-    public TelaHomeCoordenador() {
-        super("Home Coordenador", 500, 600);
+    public TelaHomeAluno(Aluno aluno) {
+        super("Home Aluno", 500, 600);
         getContentPane().setBackground(Color.WHITE);
+
+        this.aluno = aluno;
+
         initView();
 
     }
@@ -35,7 +38,7 @@ public class TelaHomeCoordenador extends BaseTela {
     public void initComponents() {
         homeService = new HomeService();
 
-        header = new BarraSuperior("Coordenador", true, () -> {
+        header = new BarraSuperior("Aluno", true, () -> {
             dispose();
             new TelaLogin();
         });
@@ -54,18 +57,10 @@ public class TelaHomeCoordenador extends BaseTela {
         scrollPane.getViewport().setBackground(Color.WHITE);
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230)));
 
-        linkCadastroEdital = new LinkTexto("Cadastrar um Edital", SwingConstants.RIGHT);
     }
 
     @Override
     public void initListeners() {
-        linkCadastroEdital.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                dispose();
-                new TelaCadastroEdital();
-            }
-        });
 
         tabelaEditais.addMouseListener(new MouseAdapter() {
             @Override
@@ -74,8 +69,7 @@ public class TelaHomeCoordenador extends BaseTela {
                 int coluna = tabelaEditais.getSelectedColumn();
 
                 if (coluna == 4 && linha >= 0) {
-                    dispose();
-                    new TelaDetalharEditalSemResultadoCoordenador(listaEditais.get(linha));
+                    new TelaDetalharEditalSemResultadoAluno(listaEditais.get(linha), aluno);
                 }
             }
         });
@@ -91,8 +85,5 @@ public class TelaHomeCoordenador extends BaseTela {
 
         scrollPane.setBounds(20, 140, 440, 360);
         add(scrollPane);
-
-        linkCadastroEdital.setBounds(20, 520, 440, 20);
-        add(linkCadastroEdital);
     }
 }

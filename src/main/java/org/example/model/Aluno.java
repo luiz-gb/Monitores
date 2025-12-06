@@ -69,4 +69,12 @@ public class Aluno {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 }

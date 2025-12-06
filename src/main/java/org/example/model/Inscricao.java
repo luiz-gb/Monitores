@@ -26,6 +26,12 @@ public class Inscricao {
     @Column(name = "data_inscricao")
     private LocalDateTime dataInscricao;
 
+    @Column(name = "cre_aluno", nullable = false)
+    private Double alunoCRE;
+
+    @Column(name = "media_aluno", nullable = false)
+    private Double alunoMedia;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "resultado_inscricao", nullable = false)
     private ResultadoInscricao resultadoInscricao;
@@ -34,12 +40,14 @@ public class Inscricao {
 
     }
 
-    public Inscricao(UUID id, Aluno aluno, Disciplina disciplina, LocalDateTime dataInscricao, ResultadoInscricao resultadoInscricao) {
+    public Inscricao(UUID id, Aluno aluno, Disciplina disciplina, LocalDateTime dataInscricao, ResultadoInscricao resultadoInscricao, Double alunoCRE, Double alunoMedia) {
         this.id = id;
         this.aluno = aluno;
         this.disciplina = disciplina;
         this.dataInscricao = dataInscricao;
         this.resultadoInscricao = resultadoInscricao;
+        this.alunoCRE = alunoCRE;
+        this.alunoMedia = alunoMedia;
     }
 
     public UUID getId() {
@@ -80,5 +88,21 @@ public class Inscricao {
 
     public void setResultadoInscricao(ResultadoInscricao resultadoInscricao) {
         this.resultadoInscricao = resultadoInscricao;
+    }
+
+    public Double getAlunoCRE() {
+        return alunoCRE;
+    }
+
+    public void setAlunoCRE(Double alunoCRE) {
+        this.alunoCRE = alunoCRE;
+    }
+
+    public Double getAlunoMedia() {
+        return alunoMedia;
+    }
+
+    public void setAlunoMedia(Double alunoMedia) {
+        this.alunoMedia = alunoMedia;
     }
 }

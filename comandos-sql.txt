@@ -44,3 +44,13 @@ create table inscricao (
 );
 
 alter table edital add column encerrado boolean default false;
+
+alter table inscricao add column cre_aluno float not null default 0.0;
+alter table inscricao add column media_aluno float not null default 0.0;
+
+alter table inscricao
+    drop constraint chk_resultado_aluno;
+
+alter table inscricao
+    add constraint chk_resultado_aluno
+    check (resultado_inscricao in ('APROVADO', 'REPROVADO', 'PENDENTE', 'DESISTENTE'));
