@@ -1,6 +1,7 @@
 package org.example.model;
 
 import jakarta.persistence.*;
+import org.example.enums.StatusEdital;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,8 +31,9 @@ public class Edital {
     @Column(name = "peso_media",nullable = false)
     private Double pesoMedia;
 
-    @Column
-    private Boolean encerrado;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusEdital status;
 
     @OneToMany(mappedBy = "edital", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Disciplina> listaDisciplinas;
@@ -103,11 +105,11 @@ public class Edital {
         this.listaDisciplinas = listaDisciplinas;
     }
 
-    public Boolean getEncerrado() {
-        return encerrado;
+    public StatusEdital getStatus() {
+        return status;
     }
 
-    public void setEncerrado(Boolean encerrado) {
-        this.encerrado = encerrado;
+    public void setStatus(StatusEdital status) {
+        this.status = status;
     }
 }

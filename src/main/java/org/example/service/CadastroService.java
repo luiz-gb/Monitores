@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.enums.StatusEdital;
 import org.example.exception.ListaVaziaException;
 import org.example.exception.UsuarioJaExisteException;
 import org.example.model.Aluno;
@@ -73,7 +74,7 @@ public class CadastroService {
         edital.setPesoCre(pesoCre);
         edital.setPesoMedia(pesoMedia);
         edital.setMaximoInscricoesPorAluno(maximoInscricoes);
-        edital.setEncerrado(false);
+        edital.setStatus(StatusEdital.ABERTO);
 
         if (listaDisciplinas.isEmpty()) throw new ListaVaziaException("Você deve cadastrar ao menos uma disciplina no edital");
 

@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.enums.ResultadoInscricao;
+import org.example.enums.StatusEdital;
 import org.example.exception.AlunoJaInscritoException;
 import org.example.exception.InscricaoInvalida;
 import org.example.model.Aluno;
@@ -28,6 +29,7 @@ public class InscricaoService {
         inscricao.setAlunoMedia(media);
         inscricao.setResultadoInscricao(ResultadoInscricao.PENDENTE);
 
+        verificarEditalEncerrado(inscricao);
         verificarAlunoJaPossuiInscricao(inscricao);
         verificarAlunoPassouLimiteInscricoes(inscricao);
         inscricaoRepository.salvar(inscricao);
@@ -47,6 +49,12 @@ public class InscricaoService {
         Disciplina disciplina = inscricao.getDisciplina();
 
         if (inscricaoRepository.retornarAlunoInscritoDisciplina(aluno, disciplina) != null) throw new AlunoJaInscritoException("Aluno já inscrito nessa disciplina!");
+    }
+
+    public void verificarEditalEncerrado (Inscricao inscricao) throws InscricaoInvalida {
+        Edital edital = inscricao.getDisciplina().getEdital();
+
+        if (edital.getStatus() == StatusEdital.ENCERRADO) throw new InscricaoInvalida("O edital está encerrado, não aceita mais incrições!");
     }
 
     public List<Inscricao> retornarTodasInscricoes () {

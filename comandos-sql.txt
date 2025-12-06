@@ -54,3 +54,9 @@ alter table inscricao
 alter table inscricao
     add constraint chk_resultado_aluno
     check (resultado_inscricao in ('APROVADO', 'REPROVADO', 'PENDENTE', 'DESISTENTE'));
+
+
+alter table edital drop column if exists encerrado;
+
+alter table edital add column status varchar(30) not null default 'ABERTO';
+alter table edital add constraint chk_status check (status in ('ABERTO', 'ENCERRADO', 'RESULTADO_PRELIMINAR', 'RESULTADO_FINAL'))

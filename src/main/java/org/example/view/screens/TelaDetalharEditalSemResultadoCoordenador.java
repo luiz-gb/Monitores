@@ -1,5 +1,6 @@
 package org.example.view.screens;
 
+import org.example.enums.StatusEdital;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
 import org.example.service.CadastroService;
@@ -146,7 +147,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         btnCancelarEdicao.setVisible(editando);
         btnSalvarEdicao.setVisible(editando);
 
-        if (edital.getEncerrado()) {
+        if (edital.getStatus() == StatusEdital.ENCERRADO) {
             System.out.println("Entrando");
             btnCancelarEdicao.setBounds(100, 640, 125, 40);
             btnCancelarEncerramento.setBounds(230, 640, 200, 40);
@@ -208,7 +209,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         });
 
         btnEncerrar.addActionListener(e -> {
-            edital.setEncerrado(true);
+            edital.setStatus(StatusEdital.ENCERRADO);
             cadastroService.salvarEdital(edital);
             JOptionPane.showMessageDialog(this, "Edital encerrado com sucesso!");
         });
@@ -216,7 +217,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         btnCancelarEncerramento.addActionListener(e -> {
             try {
                 EditalValidator.validarCancelarEncerramentoEdital(edital.getDataFinal());
-                edital.setEncerrado(false);
+                edital.setStatus(StatusEdital.ABERTO);
                 cadastroService.salvarEdital(edital);
                 JOptionPane.showMessageDialog(this, "Cancelamento de encerramento de edital concluído!");
                 new TelaDetalharEditalSemResultadoCoordenador(edital);
