@@ -1,6 +1,8 @@
 package org.example.view.components.tables;
 
+import org.example.enums.StatusEdital;
 import org.example.model.Edital;
+import org.example.validator.EditalValidator;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -39,13 +41,19 @@ public class ModeloTabelaEdital extends AbstractTableModel {
         return switch (columnIndex) {
             case 0 -> edital.getId();
             case 1 -> edital.getDataInicio();
-            case 2 -> edital.getDataFinal();
-            case 3 -> edital.getDataFinal().isBefore(java.time.LocalDate.now())
-                    ? "Encerrado"
-                    : "Aberto";
+            case 2 -> edital.getDataFinal(); // edital.getDataFinal().isBefore(java.time.LocalDate.now())
+            case 3 -> String.valueOf(calcularStatus(edital)).toLowerCase();
             case 4 -> "Clique aqui";
 
             default -> null;
         };
+    }
+
+    private StatusEdital calcularStatus (Edital edital) {
+        if (edital.getStatus() == StatusEdital.ABERTO && !EditalValidator.validarDentroPeriodoInscricoes(edital.getDataInicio(), edital.getDataFinal())) {
+            return StatusEdital.ENCERRADO;
+        }
+
+        return edital.getStatus();
     }
 }

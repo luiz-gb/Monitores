@@ -1,5 +1,6 @@
 package org.example.view.screens;
 
+import org.example.enums.StatusEdital;
 import org.example.model.Edital;
 import org.example.service.HomeService;
 import org.example.view.components.header.BarraSuperior;
@@ -73,8 +74,9 @@ public class TelaHomeCoordenador extends BaseTela {
                 int coluna = tabelaEditais.getSelectedColumn();
 
                 if (coluna == 4 && linha >= 0) {
-                    dispose();
-                    new TelaDetalharEditalSemResultadoCoordenador(listaEditais.get(linha));
+//                    dispose();
+                    if (listaEditais.get(linha).getStatus() == StatusEdital.ENCERRADO || listaEditais.get(linha).getStatus() == StatusEdital.ABERTO) new TelaDetalharEditalSemResultadoCoordenador(listaEditais.get(linha));
+                    else if (listaEditais.get(linha).getStatus() == StatusEdital.RESULADO_FINAL || listaEditais.get(linha).getStatus() == StatusEdital.RESULTADO_PRELIMINAR) new TelaDetalharEditalComResultadoCoordenador(listaEditais.get(linha));
                 }
             }
         });

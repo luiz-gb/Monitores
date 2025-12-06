@@ -9,8 +9,10 @@ import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
 import org.example.repository.InscricaoRepository;
+import org.example.util.CalcularPontuacao;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class InscricaoService {
@@ -57,7 +59,72 @@ public class InscricaoService {
         if (edital.getStatus() == StatusEdital.ENCERRADO) throw new InscricaoInvalida("O edital está encerrado, não aceita mais incrições!");
     }
 
+    public List<Inscricao> retornarInscricoesDaDisciplina (Disciplina disciplina) {
+        return inscricaoRepository.retornarInscricoesNaDisciplina(disciplina);
+    }
+
+    public List<Inscricao> processarResultadoDaDisciplina (Disciplina disciplina) {
+        List<Inscricao> listaInscricoes = retornarInscricoesDaDisciplina(disciplina);
+
+        listaInscricoes.sort((a, b) -> {
+
+            if (a.getResultadoInscricao().equals(ResultadoInscricao.DESISTENTE) &&
+                    !b.getResultadoInscricao().equals(ResultadoInscricao.DESISTENTE)) {
+                return 1;
+            }
+
+            if (b.getResultadoInscricao().equals(ResultadoInscricao.DESISTENTE) &&
+                    !a.getResultadoInscricao().equals(ResultadoInscricao.DESISTENTE)) {
+                return -1;
+            }
+
+            double pontuacao1 = CalcularPontuacao.calcularPontuacaoAluno(
+                    a.getDisciplina().getEdital().getPesoCre(),
+                    a.getDisciplina().getEdital().getPesoMedia(),
+                    a.getAlunoCRE(),
+                    a.getAlunoMedia()
+            );
+
+            double pontuacao2 = CalcularPontuacao.calcularPontuacaoAluno(
+                    b.getDisciplina().getEdital().getPesoCre(),
+                    b.getDisciplina().getEdital().getPesoMedia(),
+                    b.getAlunoCRE(),
+                    b.getAlunoMedia()
+            );
+
+            return Double.compare(pontuacao2, pontuacao1);
+        });
+
+        int vagasRemuneradas = disciplina.getVagasRemunerada();
+        int vagasVoluntarias = disciplina.getVagasVoluntarias();
+
+        listaInscricoes.forEach(e -> {
+            int posicao = listaInscricoes.indexOf(e) + 1;
+
+            if (e.getResultadoInscricao() != ResultadoInscricao.DESISTENTE) {
+                if (posicao <= vagasRemuneradas) {
+                    e.setResultadoInscricao(ResultadoInscricao.APROVADO_BOLSA);
+                }
+
+                else if (posicao <= vagasRemuneradas + vagasVoluntarias)  {
+                    e.setResultadoInscricao(ResultadoInscricao.APROVADO_VOLUNTARIO);
+                }
+            }
+
+            inscricaoRepository.atualizar(e);
+        });
+
+        return listaInscricoes;
+    }
+
     public List<Inscricao> retornarTodasInscricoes () {
         return inscricaoRepository.retornarTodasInscricoes();
+    }
+
+    public void desistirInscricao (Aluno aluno, Disciplina disciplina) {
+        Inscricao inscricao = inscricaoRepository.retornarAlunoInscritoDisciplina(aluno, disciplina);
+
+        inscricao.setResultadoInscricao(ResultadoInscricao.DESISTENTE);
+        inscricaoRepository.atualizar(inscricao);
     }
 }

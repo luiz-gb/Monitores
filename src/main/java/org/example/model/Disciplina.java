@@ -75,4 +75,9 @@ public class Disciplina {
     public void setEdital(Edital idEdital) {
         this.edital = idEdital;
     }
+
+    @Override
+    public String toString() {
+        return nomeDisciplina;
+    }
 }

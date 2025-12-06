@@ -1,5 +1,6 @@
 package org.example.view.screens;
 
+import org.example.enums.StatusEdital;
 import org.example.model.Aluno;
 import org.example.model.Edital;
 import org.example.service.HomeService;
@@ -69,11 +70,10 @@ public class TelaHomeAluno extends BaseTela {
                 int coluna = tabelaEditais.getSelectedColumn();
 
                 if (coluna == 4 && linha >= 0) {
-                    Edital editalSelecionado = listaEditais.get(linha);
-
-                    TelaDetalharEditalSemResultadoAluno telaDetalhes =  new TelaDetalharEditalSemResultadoAluno(editalSelecionado, aluno);
-                    telaDetalhes.setVisible(true);
                     dispose();
+
+                    if (listaEditais.get(linha).getStatus() == StatusEdital.ENCERRADO || listaEditais.get(linha).getStatus() == StatusEdital.ABERTO) new TelaDetalharEditalSemResultadoAluno(listaEditais.get(linha), aluno);
+                    else if (listaEditais.get(linha).getStatus() == StatusEdital.RESULADO_FINAL || listaEditais.get(linha).getStatus() == StatusEdital.RESULTADO_PRELIMINAR) new TelaDetalharEditalComResultadoAluno(listaEditais.get(linha), aluno);
                 }
             }
         });

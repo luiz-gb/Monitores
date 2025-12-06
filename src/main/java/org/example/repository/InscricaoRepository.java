@@ -25,6 +25,20 @@ public class InscricaoRepository {
         }
     }
 
+    public void atualizar (Inscricao inscricao) {
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            em.merge(inscricao);
+            em.getTransaction().commit();
+        }
+
+        finally {
+            em.close();
+        }
+    }
+
     public List<Inscricao> retornarTodasInscricoes () {
         EntityManager em = JPAUtil.getEntityManager();
 
@@ -73,6 +87,25 @@ public class InscricaoRepository {
         catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
+        }
+
+        finally {
+            em.close();
+        }
+    }
+
+    public List<Inscricao> retornarInscricoesNaDisciplina (Disciplina disciplina) {
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            return em.createQuery("select i from Inscricao i where i.disciplina = :disciplina", Inscricao.class)
+                    .setParameter("disciplina", disciplina)
+                    .getResultList();
+        }
+
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
         }
 
         finally {

@@ -57,12 +57,14 @@ public class EditalValidator {
         if (numeroNovo < numeroAntigo) throw new CampoInvalidoException("O máximo de inscrições deve ser maior ou igual ao número antigo!");
     }
 
-    public static void validarDentroPeriodoInscricoes (LocalDate dataInicio, LocalDate dataFinal) throws DataInvalidaException{
+    public static Boolean validarDentroPeriodoInscricoes (LocalDate dataInicio, LocalDate dataFinal) throws DataInvalidaException{
         LocalDate dataAtual = LocalDate.now();
 
         if (dataAtual.isBefore(dataInicio) || dataAtual.isAfter(dataFinal)) {
-            throw new DataInvalidaException("O edital está fora do período de inscrições!");
+            return false;
         }
+
+        return true;
     }
 
     public static void validarCancelarEncerramentoEdital (LocalDate dataFinal) {

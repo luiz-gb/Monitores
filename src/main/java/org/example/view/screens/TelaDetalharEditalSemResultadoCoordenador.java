@@ -41,7 +41,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
     private InputComboBox<String> comboDisciplinas;
 
     private BotaoSecundario btnVoltar, btnCancelarEdicao;
-    private BotaoPrimario btnClonar, btnEncerrar, btnEditar, btnSalvarEdicao, btnCancelarEncerramento;
+    private BotaoPrimario btnClonar, btnEncerrar, btnEditar, btnSalvarEdicao, btnCancelarEncerramento, btnGerarResultado;
 
     public TelaDetalharEditalSemResultadoCoordenador(Edital edital) {
         super("Detalhes do Edital", 600, 750);
@@ -90,6 +90,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         btnEncerrar = new BotaoPrimario("Encerrar Edital");
         btnEditar = new BotaoPrimario("Editar Edital");
         btnCancelarEncerramento = new BotaoPrimario("Cancelar Encerramento");
+        btnGerarResultado = new BotaoPrimario("Gerar Resultado");
 
         btnSalvarEdicao = new BotaoPrimario("Salvar");
         btnCancelarEdicao = new BotaoSecundario("Cancelar");
@@ -142,6 +143,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         btnClonar.setVisible(!editando);
         btnEncerrar.setVisible(!editando);
         btnEditar.setVisible(!editando);
+        btnGerarResultado.setVisible(!editando);
 
         btnCancelarEncerramento.setVisible(editando);
         btnCancelarEdicao.setVisible(editando);
@@ -230,6 +232,25 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
             }
         });
+
+        btnGerarResultado.addActionListener(e -> {
+            System.out.println(edital.getStatus());
+
+            int resposta = JOptionPane.showConfirmDialog(
+                    this,
+                    "Tem certeza que deseja gerar resultado (não poderá mais editar este edital)?",
+                    "Confirmação",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (resposta == JOptionPane.YES_OPTION) {
+                edital.setStatus(StatusEdital.RESULTADO_PRELIMINAR);
+                cadastroService.salvarEdital(edital);
+                JOptionPane.showMessageDialog(this, "Resultado gerado com sucesso!");
+                new TelaDetalharEditalComResultadoCoordenador(edital);
+            }
+        });
     }
 
     @Override
@@ -290,6 +311,9 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
 
         btnEncerrar.setBounds(300, 640, 125, 40);
         add(btnEncerrar);
+
+        btnGerarResultado.setBounds(300, 600, 125, 40);
+        add(btnGerarResultado);
 
         btnEditar.setBounds(435, 640, 125, 40);
         add(btnEditar);
