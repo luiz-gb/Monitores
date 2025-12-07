@@ -43,6 +43,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
     private JScrollPane scrollDisciplinas, scrollAlunos;
     private InputComboBox<Disciplina> comboDisciplinas;
     private List<Inscricao> listaInscricoes;
+    private TelaContatoCoordenador telaContatoAberto;
 
     private BotaoSecundario btnVoltar, btnCancelarEdicao;
     private BotaoPrimario btnClonar, btnEncerrar, btnEditar, btnSalvarEdicao, btnCancelarEncerramento, btnGerarResultado;
@@ -71,10 +72,9 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
 
         campoPesoMedia = criarInputTextoLeitura();
 
-        String[] colDisc = {"Disciplina", "Vagas Rem.", "Vagas Vol.", "Ação"};
+        String[] colDisc = {"Disciplina", "Vagas Rem.", "Vagas Vol."};
         modelDisc = new DefaultTableModel(colDisc, 0);
         tabelaDisciplinas = new TabelaPadrao(modelDisc);
-        tabelaDisciplinas.transformarColunaEmLink(3, Color.RED);
 
         scrollDisciplinas = new JScrollPane(tabelaDisciplinas);
         estilizarScroll(scrollDisciplinas);
@@ -158,8 +158,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         btnSalvarEdicao.setVisible(editando);
 
         if (edital.getStatus() == StatusEdital.ENCERRADO) {
-            System.out.println("Entrando");
-            btnCancelarEdicao.setBounds(100, 640, 125, 40);
+            btnCancelarEdicao.setBounds(25, 640, 125, 40);
             btnCancelarEncerramento.setBounds(230, 640, 200, 40);
             btnSalvarEdicao.setBounds(435, 640, 125, 40);
         }
@@ -177,7 +176,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         modelDisc.setRowCount(0);
 
         edital.getListaDisciplinas().forEach(e -> {
-            Object[] linha = {e.getNomeDisciplina(), e.getVagasRemunerada(), e.getVagasVoluntarias(), "Remover"};
+            Object[] linha = {e.getNomeDisciplina(), e.getVagasRemunerada(), e.getVagasVoluntarias()};
             modelDisc.addRow(linha);
         });
     }
@@ -189,13 +188,13 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         if (!listaInscricoes.isEmpty()) {
             listaInscricoes.forEach(e -> {
                 Object[] linha = {
-                        String.valueOf(listaInscricoes.indexOf(e) + 1),
-                        e.getAluno().getNome(),
-                        String.valueOf(e.getAlunoCRE()),
-                        String.valueOf(e.getAlunoMedia()),
-                        String.valueOf(CalcularPontuacao.calcularPontuacaoAluno(edital.getPesoCre(), edital.getPesoMedia(), e.getAlunoCRE(), e.getAlunoMedia())),
-                        String.valueOf(e.getResultadoInscricao()),
-                        "Contatar"
+                    String.valueOf(listaInscricoes.indexOf(e) + 1),
+                    e.getAluno().getNome(),
+                    String.valueOf(e.getAlunoCRE()),
+                    String.valueOf(e.getAlunoMedia()),
+                    String.valueOf(CalcularPontuacao.calcularPontuacaoAluno(edital.getPesoCre(), edital.getPesoMedia(), e.getAlunoCRE(), e.getAlunoMedia())),
+                    String.valueOf(e.getResultadoInscricao()),
+                    "Contatar"
                 };
 
                 modelAlunos.addRow(linha);
@@ -206,6 +205,9 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
     @Override
     public void initListeners() {
         btnVoltar.addActionListener(e -> {
+            if (telaContatoAberto != null) {
+                telaContatoAberto.dispose();
+            }
             dispose();
             new TelaHomeCoordenador();
         });
@@ -221,11 +223,13 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         });
 
         btnClonar.addActionListener(e -> {
+            if (telaContatoAberto != null) telaContatoAberto.dispose();
             dispose();
             new TelaCadastroEdital(edital);
         });
 
         btnEncerrar.addActionListener(e -> {
+            if (telaContatoAberto != null) telaContatoAberto.dispose();
             edital.setStatus(StatusEdital.ENCERRADO);
             cadastroService.salvarEdital(edital);
             JOptionPane.showMessageDialog(this, "Edital encerrado com sucesso!");
@@ -237,6 +241,9 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
                 edital.setStatus(StatusEdital.ABERTO);
                 cadastroService.salvarEdital(edital);
                 JOptionPane.showMessageDialog(this, "Cancelamento de encerramento de edital concluído!");
+
+                if (telaContatoAberto != null) telaContatoAberto.dispose();
+                dispose();
                 new TelaDetalharEditalSemResultadoCoordenador(edital);
             }
 
@@ -249,20 +256,21 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
             Object[] options = {"Sim", "Não"};
 
             int resposta = JOptionPane.showOptionDialog(
-                    this,
-                    "Tem certeza que deseja gerar resultado (não poderá mais editar este edital)?",
-                    "Confirmação",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options,
-                    options[0]
+                this,
+                "Tem certeza que deseja gerar resultado (não poderá mais editar este edital)?",
+                "Confirmação",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
             );
 
             if (resposta == JOptionPane.YES_OPTION) {
                 edital.setStatus(StatusEdital.RESULTADO_PRELIMINAR);
                 cadastroService.salvarEdital(edital);
                 JOptionPane.showMessageDialog(this, "Resultado gerado com sucesso!");
+                if (telaContatoAberto != null) telaContatoAberto.dispose();
                 dispose();
                 new TelaDetalharEditalComResultadoCoordenador(edital).setVisible(true);
             }
@@ -279,11 +287,16 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         tabelaAlunos.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int linha = tabelaAlunos.getSelectedRow();
-                int coluna = tabelaAlunos.getSelectedColumn();
+            int linha = tabelaAlunos.getSelectedRow();
+            int coluna = tabelaAlunos.getSelectedColumn();
 
                 if (linha >= 0 && coluna == 6) {
-                    new TelaContatoCoordenador(listaInscricoes.get(linha).getAluno());
+                    if (telaContatoAberto != null && telaContatoAberto.isVisible()) {
+                        telaContatoAberto.dispose();
+                    }
+
+                    telaContatoAberto = new TelaContatoCoordenador(listaInscricoes.get(linha).getAluno());
+                    telaContatoAberto.setVisible(true);
                 }
             }
         });
@@ -331,7 +344,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         comboDisciplinas.setBounds(30, 390, 250, 40);
         add(comboDisciplinas);
 
-        JLabel lblTab2 = new JLabel("Alunos Inscritos / Ranking");
+        JLabel lblTab2 = new JLabel("Alunos Inscritos");
         lblTab2.setFont(new Font("Arial", Font.BOLD, 14));
         lblTab2.setBounds(30, 440, 250, 20);
         add(lblTab2);
@@ -351,16 +364,15 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         btnGerarResultado.setBounds(361, 640, 100, 40);
         add(btnGerarResultado);
 
-        btnCancelarEdicao.setBounds(361, 640, 100, 40);
-        add(btnCancelarEdicao);
-
         btnEditar.setBounds(473, 640, 100, 40);
         add(btnEditar);
 
-        btnSalvarEdicao.setBounds(473, 640, 100, 40);
+        btnCancelarEdicao.setBounds(25, 640, 125, 40);
+        add(btnCancelarEdicao);
+
+        btnSalvarEdicao.setBounds(435, 640, 125, 40);
         add(btnSalvarEdicao);
 
-        btnCancelarEncerramento.setBounds(25, 640, 200, 40);
         add(btnCancelarEncerramento);
     }
 
