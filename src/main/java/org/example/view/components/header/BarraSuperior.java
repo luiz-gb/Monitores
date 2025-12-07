@@ -10,11 +10,14 @@ public class BarraSuperior extends JPanel {
 
     private JLabel labelBemVindo;
     private JLabel btnSair;
-    private JLabel btnAcaoSecundaria; // Alunos ou Perfil
-    private Runnable acaoSair;
+    private JLabel btnAcaoSecundaria;
 
-    public BarraSuperior(String nomeUsuario, boolean isCoordenador, Runnable acaoSair) {
+    private Runnable acaoSair;
+    private Runnable acaoSecundaria;
+
+    public BarraSuperior(String nomeUsuario, boolean isCoordenador, Runnable acaoSair, Runnable acaoSecundaria) {
         this.acaoSair = acaoSair;
+        this.acaoSecundaria = acaoSecundaria;
 
         setLayout(null);
         setBackground(new Color(245, 245, 245));
@@ -30,6 +33,7 @@ public class BarraSuperior extends JPanel {
         labelBemVindo.setFont(new Font("Arial", Font.PLAIN, 14));
         labelBemVindo.setForeground(new Color(50, 50, 50));
         labelBemVindo.setVerticalAlignment(SwingConstants.CENTER);
+
         String textoBotao = isCoordenador ? "Alunos" : "Meu Perfil";
         String iconePath = isCoordenador ? "/images/group.png" : "/images/profile.png";
 
@@ -74,6 +78,13 @@ public class BarraSuperior extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (acaoSair != null) acaoSair.run();
+            }
+        });
+
+        btnAcaoSecundaria.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (acaoSecundaria != null) acaoSecundaria.run();
             }
         });
     }

@@ -7,14 +7,10 @@ public abstract class BaseTela extends JFrame {
 
     public BaseTela(String titulo, int largura, int altura) {
         super(titulo);
-
         setSize(largura, altura);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         setLayout(null);
-
         setResizable(false);
-
         setLocationRelativeTo(null);
     }
 

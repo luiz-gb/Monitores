@@ -21,7 +21,6 @@ public class BotaoSecundario extends JButton {
         setBorderPainted(false);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover simples
         addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent evt) {
                 setBackground(new Color(200, 200, 200));
