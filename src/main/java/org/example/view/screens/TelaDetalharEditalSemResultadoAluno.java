@@ -41,15 +41,12 @@ public class TelaDetalharEditalSemResultadoAluno extends BaseTela {
 
     public TelaDetalharEditalSemResultadoAluno(Edital edital, Aluno aluno) {
         super("Detalhes do Edital", 600, 750);
+        System.out.println("aa");
         this.edital = edital;
         this.aluno = aluno;
         this.inscricaoService = new InscricaoService();
 
-        if (campoDataInicio == null) {
-            initComponents();
-            initLayout();
-            initListeners();
-        }
+        initView();
 
         preencherDadosEdital();
         carregarDisciplinas();

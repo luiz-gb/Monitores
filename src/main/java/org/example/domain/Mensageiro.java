@@ -7,7 +7,7 @@ import jakarta.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class Mensageiro {
-    public static void enviarEmail(String email, String mensagem) throws MessagingException {
+    public static void enviarEmail(String email, String titulo, String mensagem) throws MessagingException {
         // configs
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -35,12 +35,10 @@ public class Mensageiro {
                     Message.RecipientType.TO,
                     InternetAddress.parse(email)
             );
-            message.setSubject("Inscrição Monitoria");
+            message.setSubject(titulo);
             message.setText(mensagem);
 
             Transport.send(message);
-
-            System.out.println("E-mail enviado com sucesso!");
 
         } catch (MessagingException e) {
             throw new MessagingException("Erro ao enviar email!");

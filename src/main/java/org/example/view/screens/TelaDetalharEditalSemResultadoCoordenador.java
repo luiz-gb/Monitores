@@ -1,6 +1,7 @@
 package org.example.view.screens;
 
 import org.example.enums.StatusEdital;
+import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
 import org.example.service.CadastroService;
@@ -21,6 +22,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -38,7 +41,8 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
     private DefaultTableModel modelDisc;
     private DefaultTableModel modelAlunos;
     private JScrollPane scrollDisciplinas, scrollAlunos;
-    private InputComboBox<String> comboDisciplinas;
+    private InputComboBox<Disciplina> comboDisciplinas;
+    private List<Inscricao> listaInscricoes;
 
     private BotaoSecundario btnVoltar, btnCancelarEdicao;
     private BotaoPrimario btnClonar, btnEncerrar, btnEditar, btnSalvarEdicao, btnCancelarEncerramento, btnGerarResultado;
@@ -76,11 +80,12 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         estilizarScroll(scrollDisciplinas);
 
         comboDisciplinas = new InputComboBox<>();
-        comboDisciplinas.addItem("Selecione a Disciplina...");
+        comboDisciplinas.addItem(null);
 
-        String[] colAlunos = {"Ordem Inscricção", "Aluno", "CRE", "Média", "Pontuação", "Status"};
+        String[] colAlunos = {"Ordem Inscricção", "Aluno", "CRE", "Média", "Pontuação", "Status", "Ação"};
         modelAlunos = new DefaultTableModel(colAlunos, 0);
         tabelaAlunos = new TabelaPadrao(modelAlunos);
+        tabelaAlunos.transformarColunaEmLink(6, new Color(0, 102, 204));
 
         scrollAlunos = new JScrollPane(tabelaAlunos);
         estilizarScroll(scrollAlunos);
@@ -170,20 +175,26 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
 
         edital.getListaDisciplinas().forEach(e -> {
             Object[] linha = {e.getNomeDisciplina(), e.getVagasRemunerada(), e.getVagasVoluntarias(), "Remover"};
+            comboDisciplinas.addItem(e);
             modelDisc.addRow(linha);
         });
+    }
 
-        List<Inscricao> listaInscricoes = inscricaoService.retornarTodasInscricoes();
+    public void carregarDadosTabelaInscricoes (Disciplina disciplina) {
+        listaInscricoes = inscricaoService.retornarInscricoesDaDisciplina(disciplina);
+        modelAlunos.setRowCount(0);
 
         if (!listaInscricoes.isEmpty()) {
             listaInscricoes.forEach(e -> {
+                comboDisciplinas.addItem(e.getDisciplina());
                 Object[] linha = {
                         String.valueOf(listaInscricoes.indexOf(e) + 1),
                         e.getAluno().getNome(),
                         String.valueOf(e.getAlunoCRE()),
                         String.valueOf(e.getAlunoMedia()),
                         String.valueOf(CalcularPontuacao.calcularPontuacaoAluno(edital.getPesoCre(), edital.getPesoMedia(), e.getAlunoCRE(), e.getAlunoMedia())),
-                        String.valueOf(e.getResultadoInscricao())
+                        String.valueOf(e.getResultadoInscricao()),
+                        "Contatar"
                 };
 
                 modelAlunos.addRow(linha);
@@ -249,6 +260,26 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
                 cadastroService.salvarEdital(edital);
                 JOptionPane.showMessageDialog(this, "Resultado gerado com sucesso!");
                 new TelaDetalharEditalComResultadoCoordenador(edital);
+            }
+        });
+
+        comboDisciplinas.addActionListener(e -> {
+            Disciplina disciplinaSelecionada = (Disciplina) comboDisciplinas.getSelectedItem();
+
+            if (disciplinaSelecionada != null) {
+                carregarDadosTabelaInscricoes(disciplinaSelecionada);
+            }
+        });
+
+        tabelaAlunos.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int linha = tabelaAlunos.getSelectedRow();
+                int coluna = tabelaAlunos.getSelectedColumn();
+
+                if (linha >= 0 && coluna == 6) {
+                    new TelaContatoCoordenador(listaInscricoes.get(linha).getAluno());
+                }
             }
         });
     }

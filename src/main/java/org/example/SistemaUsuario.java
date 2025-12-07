@@ -322,16 +322,16 @@ public class SistemaUsuario {
                     continue;
                 }
 
-                if (edital.inscrever(aluno, disciplina) && persistencia.salvarCentral(central)) {
-                    System.out.println("Inscrição concluída com sucesso!");
-
-                    try {
-                        Mensageiro.enviarEmail(aluno.getEmail(), "Olá " + aluno.getNome() + ", você foi inscrito no edital #" + edital.getNumeroEdital());
-                    }
-                    catch (MessagingException e) {
-                        System.out.println("Erro ao enviar email!");
-                    }
-                }
+//                if (edital.inscrever(aluno, disciplina) && persistencia.salvarCentral(central)) {
+//                    System.out.println("Inscrição concluída com sucesso!");
+//
+//                    try {
+//                        Mensageiro.enviarEmail(aluno.getEmail(), "Olá " + aluno.getNome() + ", você foi inscrito no edital #" + edital.getNumeroEdital());
+//                    }
+//                    catch (MessagingException e) {
+//                        System.out.println("Erro ao enviar email!");
+//                    }
+//                }
 
                 else {
                     System.out.println("Houve um erro com a inscrição, tente novamente! (Recomendamos verificar o nome da disciplina e o período de inscrição)");

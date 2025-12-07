@@ -36,11 +36,15 @@ public class ComponentValidator {
     }
 
     public static void validarMatricula (String matricula) throws CampoVazioException, CampoInvalidoException{
-        if (matricula.strip().isEmpty()) {
+        if (matricula.isBlank()) {
             throw new CampoVazioException("A matrícula não pode estar vazia, tente novamente!");
         }
         else if (!matricula.matches("\\d+") || matricula.length() != 5) {
             throw new CampoInvalidoException("Matrícula inválida, digite um número de 5 caracteres!");
         }
+    }
+
+    public static void validarCampoEmail (String campo) throws CampoVazioException {
+        if (campo.isBlank()) throw new CampoVazioException("Os campos não podem estar vazios para o envio do email!");
     }
 }
