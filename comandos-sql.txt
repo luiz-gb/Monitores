@@ -21,7 +21,7 @@ create table edital (
 	id UUID not null primary key,
 	data_inicio date not null,
 	data_final date not null,
-	maximo_inscricoes_disciplina int not null,
+	maximo_inscricoes_aluno int not null,
 	peso_cre float not null,
 	peso_media float not null
 );

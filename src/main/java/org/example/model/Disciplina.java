@@ -13,13 +13,13 @@ public class Disciplina {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "nome_disciplina")
+    @Column(name = "nome_disciplina", nullable = false)
     private String nomeDisciplina;
 
-    @Column(name = "vagas_remuneradas")
+    @Column(name = "vagas_remuneradas", nullable = false)
     private Integer vagasRemunerada;
 
-    @Column(name = "vagas_voluntarias")
+    @Column(name = "vagas_voluntarias", nullable = false)
     private Integer vagasVoluntarias;
 
     @ManyToOne(cascade = CascadeType.ALL)
