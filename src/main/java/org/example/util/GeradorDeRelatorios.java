@@ -3,7 +3,6 @@ package org.example.util;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import org.example.domain.Aluno;
 import org.example.model.Disciplina;
 import org.example.model.Inscricao;
 import org.example.service.InscricaoService;
