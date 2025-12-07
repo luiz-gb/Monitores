@@ -10,6 +10,7 @@ import org.example.model.Edital;
 import org.example.model.Inscricao;
 import org.example.repository.InscricaoRepository;
 import org.example.util.CalcularPontuacao;
+import org.example.validator.EditalValidator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class InscricaoService {
     public void verificarEditalEncerrado (Inscricao inscricao) throws InscricaoInvalida {
         Edital edital = inscricao.getDisciplina().getEdital();
 
-        if (edital.getStatus() == StatusEdital.ENCERRADO) throw new InscricaoInvalida("O edital está encerrado, não aceita mais incrições!");
+        if (edital.getStatus() == StatusEdital.ENCERRADO || !EditalValidator.validarDentroPeriodoInscricoes(edital.getDataInicio(), edital.getDataFinal())) throw new InscricaoInvalida("O edital está encerrado, não aceita mais incrições!");
     }
 
     public List<Inscricao> retornarInscricoesDaDisciplina (Disciplina disciplina) {
@@ -130,5 +131,18 @@ public class InscricaoService {
 
     public List<Inscricao> retornarInscricoesEdital (Edital edital) {
         return inscricaoRepository.retornarInscricoesDoEdital(edital);
+    }
+
+    public List<Inscricao> retornarAprovacoesAluno (Aluno aluno) {
+        List<Inscricao> listaInscricoesAluno = inscricaoRepository.retornarInscricoesDoAluno(aluno);
+
+        List<Inscricao> listaAprovacoesAluno = new ArrayList<>();
+
+        listaInscricoesAluno.forEach(e -> {
+            if ((e.getResultadoInscricao() == ResultadoInscricao.APROVADO_BOLSA || e.getResultadoInscricao() == ResultadoInscricao.APROVADO_VOLUNTARIO)
+                    && e.getDisciplina().getEdital().getStatus() == StatusEdital.RESULTADO_FINAL) listaAprovacoesAluno.add(e);
+        });
+
+        return listaAprovacoesAluno;
     }
 }

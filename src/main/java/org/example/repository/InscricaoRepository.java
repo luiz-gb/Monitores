@@ -131,4 +131,23 @@ public class InscricaoRepository {
         }
     }
 
+    public List<Inscricao> retornarInscricoesDoAluno (Aluno aluno) {
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            return em.createQuery("select i from Inscricao i where i.aluno = :aluno", Inscricao.class)
+                    .setParameter("aluno", aluno)
+                    .getResultList();
+        }
+
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+
+        finally {
+            em.close();
+        }
+    }
+
 }
