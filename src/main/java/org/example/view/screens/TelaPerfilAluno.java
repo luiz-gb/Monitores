@@ -4,7 +4,10 @@ import org.example.exception.CampoInvalidoException;
 import org.example.exception.CampoTamanhoInvalidoException;
 import org.example.exception.CampoVazioException;
 import org.example.model.Aluno;
+import org.example.model.Inscricao;
 import org.example.service.AlunoService;
+import org.example.service.InscricaoService;
+import org.example.util.CalcularPontuacao;
 import org.example.validator.ComponentValidator;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoPrimario;
@@ -13,6 +16,9 @@ import org.example.view.components.input.InputTexto;
 import org.example.view.components.tables.TabelaPadrao;
 import org.example.view.components.text.LabelTexto;
 import org.example.view.components.text.LabelTitulo;
+
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,6 +30,7 @@ public class TelaPerfilAluno extends BaseTela {
     private Aluno aluno;
     private boolean isCoordenador;
     private AlunoService alunoService;
+    private InscricaoService inscricaoService;
 
     private InputTexto campoNome, campoEmail, campoMatricula;
 
@@ -42,6 +49,7 @@ public class TelaPerfilAluno extends BaseTela {
         this.aluno = aluno;
         this.isCoordenador = isCoordenador;
         this.alunoService = new AlunoService();
+        this.inscricaoService = new InscricaoService();
 
         initView();
         preencherDados();
@@ -53,7 +61,7 @@ public class TelaPerfilAluno extends BaseTela {
         campoEmail = criarInputLeitura();
         campoMatricula = criarInputLeitura();
 
-        String[] colunas = {"Disciplina", "Tipo Aprovação", "Data", "Pontuação"};
+        String[] colunas = {"Disciplina", "Tipo Aprovação", "Data Insc.", "Pontuação"};
         modelHistorico = new DefaultTableModel(colunas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -93,6 +101,27 @@ public class TelaPerfilAluno extends BaseTela {
             campoEmail.setText(aluno.getEmail());
             campoMatricula.setText(aluno.getMatricula());
         }
+
+        List<Inscricao> listaAprovacoes = inscricaoService.retornarAprovacoesAluno(aluno);
+        DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        listaAprovacoes.forEach(e -> {
+            double pontuacao = CalcularPontuacao.calcularPontuacaoAluno(
+                    e.getDisciplina().getEdital().getPesoCre(),
+                    e.getDisciplina().getEdital().getPesoMedia(),
+                    e.getAlunoCRE(),
+                    e.getAlunoMedia()
+            );
+
+            Object[] linha = {
+                    e.getDisciplina().getNomeDisciplina(),
+                    String.valueOf(e.getResultadoInscricao()).toLowerCase(),
+                    e.getDataInscricao().format(formatadorData),
+                    String.valueOf(pontuacao)
+            };
+
+            modelHistorico.addRow(linha);
+        });
     }
 
     private void alternarModoEdicao(boolean editando) {

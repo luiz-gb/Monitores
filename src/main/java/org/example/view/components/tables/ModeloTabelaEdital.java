@@ -5,6 +5,7 @@ import org.example.model.Edital;
 import org.example.validator.EditalValidator;
 
 import javax.swing.table.AbstractTableModel;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ModeloTabelaEdital extends AbstractTableModel {
@@ -38,10 +39,12 @@ public class ModeloTabelaEdital extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Edital edital = editais.get(rowIndex);
 
+        DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         return switch (columnIndex) {
             case 0 -> edital.getId();
-            case 1 -> edital.getDataInicio();
-            case 2 -> edital.getDataFinal(); // edital.getDataFinal().isBefore(java.time.LocalDate.now())
+            case 1 -> edital.getDataInicio().format(formatadorData);
+            case 2 -> edital.getDataFinal().format(formatadorData); // edital.getDataFinal().isBefore(java.time.LocalDate.now())
             case 3 -> String.valueOf(calcularStatus(edital)).toLowerCase();
             case 4 -> "Clique aqui";
 
