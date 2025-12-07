@@ -18,7 +18,7 @@ import java.util.List;
 public class TelaHomeCoordenador extends BaseTela {
 
     private BarraSuperior header;
-    List<Edital> listaEditais;
+    private List<Edital> listaEditais;
     private JLabel labelTituloSecao;
     private TabelaPadrao tabelaEditais;
     private JScrollPane scrollPane;
@@ -26,7 +26,7 @@ public class TelaHomeCoordenador extends BaseTela {
     private HomeService homeService;
 
     public TelaHomeCoordenador() {
-        super("Home Coordenador", 500, 600);
+        super("Home Coordenador", 600, 750);
         getContentPane().setBackground(Color.WHITE);
         initView();
     }
@@ -47,7 +47,6 @@ public class TelaHomeCoordenador extends BaseTela {
         listaEditais = homeService.retornarEditais();
 
         tabelaEditais = new TabelaPadrao(new ModeloTabelaEdital(listaEditais));
-
         tabelaEditais.transformarColunaEmLink(4, new Color(0, 102, 204));
 
         scrollPane = new JScrollPane(tabelaEditais);
@@ -74,9 +73,15 @@ public class TelaHomeCoordenador extends BaseTela {
                 int coluna = tabelaEditais.getSelectedColumn();
 
                 if (coluna == 4 && linha >= 0) {
-//                    dispose();
-                    if (listaEditais.get(linha).getStatus() == StatusEdital.ENCERRADO || listaEditais.get(linha).getStatus() == StatusEdital.ABERTO) new TelaDetalharEditalSemResultadoCoordenador(listaEditais.get(linha));
-                    else if (listaEditais.get(linha).getStatus() == StatusEdital.RESULADO_FINAL || listaEditais.get(linha).getStatus() == StatusEdital.RESULTADO_PRELIMINAR) new TelaDetalharEditalComResultadoCoordenador(listaEditais.get(linha));
+                    Edital editalSelecionado = listaEditais.get(linha);
+                    StatusEdital status = editalSelecionado.getStatus();
+
+                    if (status == StatusEdital.ENCERRADO || status == StatusEdital.ABERTO) {
+                        new TelaDetalharEditalSemResultadoCoordenador(editalSelecionado).setVisible(true);
+                    }
+                    else if (status == StatusEdital.RESULTADO_FINAL || status == StatusEdital.RESULTADO_PRELIMINAR) {
+                        new TelaDetalharEditalComResultadoCoordenador(editalSelecionado).setVisible(true);
+                    }
                 }
             }
         });
@@ -84,16 +89,16 @@ public class TelaHomeCoordenador extends BaseTela {
 
     @Override
     public void initLayout() {
-        header.setBounds(0, 0, 500, 70);
+        header.setBounds(0, 0, 600, 70);
         add(header);
 
-        labelTituloSecao.setBounds(20, 100, 400, 30);
+        labelTituloSecao.setBounds(20, 100, 500, 30);
         add(labelTituloSecao);
 
-        scrollPane.setBounds(20, 140, 440, 360);
+        scrollPane.setBounds(20, 140, 540, 500);
         add(scrollPane);
 
-        linkCadastroEdital.setBounds(20, 520, 440, 20);
+        linkCadastroEdital.setBounds(20, 650, 540, 20);
         add(linkCadastroEdital);
     }
 }

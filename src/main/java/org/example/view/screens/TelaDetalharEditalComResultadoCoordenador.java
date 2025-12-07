@@ -8,9 +8,12 @@ import org.example.service.CadastroService;
 import org.example.service.InscricaoService;
 import org.example.util.CalcularPontuacao;
 import org.example.view.components.base.BaseTela;
+import org.example.view.components.buttons.BotaoPrimario;
 import org.example.view.components.buttons.BotaoSecundario;
 import org.example.view.components.input.InputComboBox;
 import org.example.view.components.tables.TabelaPadrao;
+import org.example.view.components.text.LabelTexto;
+import org.example.view.components.text.LabelTitulo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,132 +22,169 @@ import java.util.List;
 
 public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
 
-    private JScrollPane scrollAlunos;
     private Edital edital;
     private InscricaoService inscricaoService;
-    private InputComboBox<Disciplina> comboDisciplinas;
-    private DefaultTableModel modelAlunos;
-    private TabelaPadrao tabelaAlunos;
-    private BotaoSecundario btnVoltar;
-    private BotaoSecundario btnFecharEdital;
     private CadastroService cadastroService;
-    private BotaoSecundario btnGerarPdf;
+
+    private InputComboBox<Disciplina> comboDisciplinas;
+    private TabelaPadrao tabelaAlunos;
+    private DefaultTableModel modelAlunos;
+    private JScrollPane scrollAlunos;
+
+    private BotaoSecundario btnVoltar, btnGerarPdf;
+    private BotaoPrimario btnFecharEdital;
 
     public TelaDetalharEditalComResultadoCoordenador(Edital edital) {
-        super("Resultado Preliminar Do Edital", 700, 800);
-
+        super("Resultado do Edital", 700, 800);
         this.edital = edital;
         this.inscricaoService = new InscricaoService();
         this.cadastroService = new CadastroService();
 
-        initView();
+        if (comboDisciplinas == null) {
+            initComponents();
+            initLayout();
+            initListeners();
+        }
+
+        carregarDisciplinasNoCombo();
+        configurarVisibilidadeBotoes();
     }
 
     @Override
     public void initComponents() {
-
         comboDisciplinas = new InputComboBox<>();
         comboDisciplinas.addItem(null);
 
-        String[] colAlunos = {"Posição", "Aluno", "CRE", "Média", "Pontuação", "Status"};
-        modelAlunos = new DefaultTableModel(colAlunos, 0);
+        String[] colAlunos = {"Pos.", "Aluno", "CRE", "Média", "Pontuação", "Status"};
+        modelAlunos = new DefaultTableModel(colAlunos, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         tabelaAlunos = new TabelaPadrao(modelAlunos);
 
         scrollAlunos = new JScrollPane(tabelaAlunos);
+        scrollAlunos.getViewport().setBackground(Color.WHITE);
+        scrollAlunos.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230)));
 
         btnVoltar = new BotaoSecundario("Voltar");
-        btnFecharEdital = new BotaoSecundario("Fechar Edital");
-        btnGerarPdf = new BotaoSecundario("Gerar pdf");
-        btnGerarPdf.setVisible(false);
+        btnFecharEdital = new BotaoPrimario("Fechar Edital");
+        btnGerarPdf = new BotaoSecundario("Gerar PDF");
+    }
 
-        if (edital.getStatus() != StatusEdital.RESULTADO_PRELIMINAR) {
+    private void configurarVisibilidadeBotoes() {
+        if (edital.getStatus() == StatusEdital.RESULTADO_PRELIMINAR) {
+            btnFecharEdital.setVisible(true);
+            btnGerarPdf.setVisible(false);
+        } else {
             btnFecharEdital.setVisible(false);
             btnGerarPdf.setVisible(true);
         }
+    }
 
-        carregarComponents();
+    private void carregarDisciplinasNoCombo() {
+        if (edital.getListaDisciplinas() != null) {
+            edital.getListaDisciplinas().forEach(d -> comboDisciplinas.addItem(d));
+        }
     }
 
     @Override
     public void initListeners() {
         comboDisciplinas.addActionListener(e -> {
             Disciplina disciplinaSelecionada = (Disciplina) comboDisciplinas.getSelectedItem();
-
-            if (disciplinaSelecionada != null) carregarTabelaAlunos(disciplinaSelecionada);
+            if (disciplinaSelecionada != null) {
+                carregarTabelaAlunos(disciplinaSelecionada);
+            }
         });
 
         btnVoltar.addActionListener(e -> {
             dispose();
-            new TelaHomeCoordenador();
+            new TelaHomeCoordenador().setVisible(true);
         });
 
         btnFecharEdital.addActionListener(e -> {
-            edital.setStatus(StatusEdital.RESULADO_FINAL);
-            cadastroService.salvarEdital(edital);
-            dispose();
-            JOptionPane.showMessageDialog(this, "Resultado Final Lançado!");
-            new TelaDetalharEditalComResultadoCoordenador(edital);
+            Object[] options = {"Sim", "Não"};
+            int resposta = JOptionPane.showOptionDialog(
+                this,
+                "Deseja realmente encerrar o edital?\nO resultado será consolidado como FINAL.",
+                "Confirmar Fechamento",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+            );
+
+            if (resposta == JOptionPane.YES_OPTION) {
+                edital.setStatus(StatusEdital.RESULTADO_FINAL);
+                cadastroService.salvarEdital(edital);
+
+                JOptionPane.showMessageDialog(this, "Resultado Final Lançado com Sucesso!");
+                dispose();
+                new TelaDetalharEditalComResultadoCoordenador(edital).setVisible(true);
+            }
         });
-    }
 
-    @Override
-    public void initLayout() {
-        JPanel painel = new JPanel(new BorderLayout());
-        painel.setBounds(0, 0, getWidth(), getHeight());
-
-        painel.add(comboDisciplinas, BorderLayout.NORTH);
-        painel.add(scrollAlunos, BorderLayout.CENTER);
-
-        JPanel rodape = new JPanel();
-        rodape.add(btnVoltar);
-        rodape.add(btnFecharEdital);
-        rodape.add(btnGerarPdf);
-
-        painel.add(rodape, BorderLayout.SOUTH);
-
-        add(painel);
-    }
-
-    private void estilizarScroll(JScrollPane scroll) {
-        scroll.getViewport().setBackground(Color.WHITE);
-        scroll.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230)));
-    }
-
-    private void carregarComponents() {
-        if (!edital.getListaDisciplinas().isEmpty()) edital.getListaDisciplinas().forEach(i -> {
-            comboDisciplinas.addItem(i);
+        btnGerarPdf.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Funcionalidade de PDF em desenvolvimento.");
         });
     }
 
     private void carregarTabelaAlunos(Disciplina disciplina) {
         List<Inscricao> listaInscricoes = inscricaoService.processarResultadoDaDisciplina(disciplina);
-
         modelAlunos.setRowCount(0);
 
         if (!listaInscricoes.isEmpty()) {
             for (int i = 0; i < listaInscricoes.size(); i++) {
-                Inscricao e = listaInscricoes.get(i);
-                int posicao = i + 1;
+                Inscricao inscricao = listaInscricoes.get(i);
 
-                double pontuacaoAluno = CalcularPontuacao.calcularPontuacaoAluno(
-                        e.getDisciplina().getEdital().getPesoCre(),
-                        e.getDisciplina().getEdital().getPesoMedia(),
-                        e.getAlunoCRE(),
-                        e.getAlunoMedia()
+                double pontuacao = CalcularPontuacao.calcularPontuacaoAluno(
+                        edital.getPesoCre(),
+                        edital.getPesoMedia(),
+                        inscricao.getAlunoCRE(),
+                        inscricao.getAlunoMedia()
                 );
 
                 Object[] linha = {
-                        listaInscricoes.indexOf(e) + 1 + "º",
-                        e.getAluno().getNome(),
-                        String.valueOf(e.getAlunoCRE()),
-                        String.valueOf(e.getAlunoMedia()),
-                        String.valueOf(pontuacaoAluno),
-                        String.valueOf(e.getResultadoInscricao()).toLowerCase()
+                        (i + 1) + "º",
+                        inscricao.getAluno().getNome(),
+                        inscricao.getAlunoCRE(),
+                        inscricao.getAlunoMedia(),
+                        String.format("%.2f", pontuacao),
+                        inscricao.getResultadoInscricao().toString().toLowerCase()
                 };
-
                 modelAlunos.addRow(linha);
-            };
+            }
         }
     }
 
+    @Override
+    public void initLayout() {
+        LabelTitulo titulo = new LabelTitulo("Resultado do Edital");
+        titulo.setBounds(0, 20, 700, 30);
+        add(titulo);
+
+        add(new LabelTexto("Selecione a Disciplina:") {{ setBounds(50, 70, 300, 20); }});
+        comboDisciplinas.setBounds(50, 95, 300, 40);
+        add(comboDisciplinas);
+
+        JLabel lblRanking = new JLabel("Classificação Geral");
+        lblRanking.setFont(new Font("Arial", Font.BOLD, 14));
+        lblRanking.setBounds(50, 150, 300, 20);
+        add(lblRanking);
+
+        scrollAlunos.setBounds(50, 180, 600, 480);
+        add(scrollAlunos);
+
+        btnVoltar.setBounds(50, 690, 120, 40);
+        add(btnVoltar);
+
+        btnFecharEdital.setBounds(530, 690, 120, 40);
+        add(btnFecharEdital);
+
+        btnGerarPdf.setBounds(530, 690, 120, 40);
+        add(btnGerarPdf);
+    }
 }
