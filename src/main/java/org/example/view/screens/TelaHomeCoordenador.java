@@ -77,9 +77,11 @@ public class TelaHomeCoordenador extends BaseTela {
                     StatusEdital status = editalSelecionado.getStatus();
 
                     if (status == StatusEdital.ENCERRADO || status == StatusEdital.ABERTO) {
+                        dispose();
                         new TelaDetalharEditalSemResultadoCoordenador(editalSelecionado).setVisible(true);
                     }
                     else if (status == StatusEdital.RESULTADO_FINAL || status == StatusEdital.RESULTADO_PRELIMINAR) {
+                        dispose();
                         new TelaDetalharEditalComResultadoCoordenador(editalSelecionado).setVisible(true);
                     }
                 }

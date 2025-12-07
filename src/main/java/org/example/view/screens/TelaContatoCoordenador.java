@@ -4,92 +4,118 @@ import jakarta.mail.MessagingException;
 import org.example.util.Mensageiro;
 import org.example.exception.CampoVazioException;
 import org.example.model.Aluno;
-import org.example.model.Disciplina;
-import org.example.model.Edital;
-import org.example.service.InscricaoService;
-import org.example.validator.ComponentValidator;
 import org.example.view.components.base.BaseTela;
+import org.example.view.components.buttons.BotaoPrimario;
 import org.example.view.components.buttons.BotaoSecundario;
-import org.example.view.components.input.InputComboBox;
-import org.example.view.components.tables.TabelaPadrao;
+import org.example.view.components.input.InputTexto;
+import org.example.view.components.text.LabelTexto;
+import org.example.view.components.text.LabelTitulo;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class TelaContatoCoordenador extends BaseTela {
 
-    private JScrollPane scrollAlunos;
-    private Edital edital;
-    private InscricaoService inscricaoService;
-    private InputComboBox<Disciplina> comboDisciplinas;
-    private DefaultTableModel modelAlunos;
-    private TabelaPadrao tabelaAlunos;
-    private BotaoSecundario btnVoltar;
-    private JLabel labelDesistir;
     private Aluno aluno;
-    private JTextField campoAssunto;
+    private InputTexto campoDestinatario;
+    private InputTexto campoAssunto;
     private JTextArea campoMensagem;
-    private JButton btnEnviarEmail;
+    private JScrollPane scrollMensagem;
+
+    private BotaoPrimario btnEnviar;
+    private BotaoSecundario btnVoltar;
 
     public TelaContatoCoordenador(Aluno aluno) {
-        super("Contato", 700, 800);
-
+        super("Contatar Estudante", 500, 500);
         this.aluno = aluno;
-        this.inscricaoService = new InscricaoService();
-
         initView();
+        preencherDados();
     }
 
     @Override
     public void initComponents() {
+        campoDestinatario = new InputTexto();
+        campoDestinatario.setEditable(false);
+        campoDestinatario.setBackground(new Color(245, 245, 245));
 
-        campoAssunto = new JTextField("");
-        campoMensagem = new JTextArea("");
-        btnEnviarEmail = new JButton("Enviar");
+        campoAssunto = new InputTexto();
+
+        campoMensagem = new JTextArea();
+        campoMensagem.setFont(new Font("Arial", Font.PLAIN, 14));
+        campoMensagem.setLineWrap(true);
+        campoMensagem.setWrapStyleWord(true);
+
+        scrollMensagem = new JScrollPane(campoMensagem);
+        scrollMensagem.setBorder(new CompoundBorder(
+                new LineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 5, 5, 5)
+        ));
+        scrollMensagem.getViewport().setBackground(Color.WHITE);
+
+        btnEnviar = new BotaoPrimario("Enviar E-mail");
+        btnVoltar = new BotaoSecundario("Cancelar");
+    }
+
+    private void preencherDados() {
+        if (aluno != null) {
+            campoDestinatario.setText(aluno.getNome() + " <" + aluno.getEmail() + ">");
+        }
     }
 
     @Override
     public void initListeners() {
-        btnEnviarEmail.addActionListener(e -> {
-            String titulo = campoAssunto.getText();
+        btnVoltar.addActionListener(e -> dispose());
+
+        btnEnviar.addActionListener(e -> {
+            String assunto = campoAssunto.getText();
             String mensagem = campoMensagem.getText();
 
             try {
-                ComponentValidator.validarCampoEmail(titulo);
-                ComponentValidator.validarCampoEmail(mensagem);
+                if (assunto.isEmpty() || mensagem.isEmpty()) {
+                    throw new CampoVazioException("Assunto e Mensagem são obrigatórios.");
+                }
 
-                Mensageiro.enviarEmail(aluno.getEmail(), titulo, mensagem);
-                JOptionPane.showMessageDialog(this, "Email enviado com sucesso!");
-            }
+                btnEnviar.setText("Enviando...");
+                btnEnviar.setEnabled(false);
 
-            catch (CampoVazioException | MessagingException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage());
+                Mensageiro.enviarEmail(aluno.getEmail(), assunto, mensagem);
+
+                JOptionPane.showMessageDialog(this, "E-mail enviado com sucesso para " + aluno.getNome() + "!");
+                dispose();
+
+            } catch (CampoVazioException | MessagingException ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao enviar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                btnEnviar.setText("Enviar E-mail");
+                btnEnviar.setEnabled(true);
             }
         });
     }
 
     @Override
     public void initLayout() {
+        LabelTitulo titulo = new LabelTitulo("Contatar Estudante");
+        titulo.setBounds(0, 20, 500, 30);
+        add(titulo);
 
-        JLabel labelAssunto = new JLabel("Assunto: ");
-        labelAssunto.setBounds(30, 30, 100, 20);
-        add(labelAssunto);
+        add(new LabelTexto("Para:") {{ setBounds(30, 70, 440, 20); }});
+        campoDestinatario.setBounds(30, 95, 425, 40);
+        add(campoDestinatario);
 
-        campoAssunto.setBounds(30, 55, 620, 30);
+        add(new LabelTexto("Assunto:") {{ setBounds(30, 145, 440, 20); }});
+        campoAssunto.setBounds(30, 170, 425, 40);
         add(campoAssunto);
 
-        JLabel labelMensagem = new JLabel("Mensagem: ");
-        labelMensagem.setBounds(30, 100, 100, 20);
-        add(labelMensagem);
+        add(new LabelTexto("Mensagem:") {{ setBounds(30, 220, 440, 20); }});
+        scrollMensagem.setBounds(30, 245, 425, 130);
+        add(scrollMensagem);
 
-        campoMensagem.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        campoMensagem.setBounds(30, 125, 620, 200);
-        add(campoMensagem);
+        btnVoltar.setBounds(30, 400, 120, 40);
+        add(btnVoltar);
 
-        btnEnviarEmail.setBounds(550, 340, 100, 30);
-        add(btnEnviarEmail);
+        btnEnviar.setBounds(315, 400, 140, 40);
+        add(btnEnviar);
     }
-
-
 }
