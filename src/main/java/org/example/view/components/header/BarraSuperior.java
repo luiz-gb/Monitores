@@ -29,7 +29,7 @@ public class BarraSuperior extends JPanel {
         labelBemVindo = new JLabel("Olá, " + nome);
         labelBemVindo.setFont(new Font("Arial", Font.PLAIN, 14));
         labelBemVindo.setForeground(new Color(50, 50, 50));
-
+        labelBemVindo.setVerticalAlignment(SwingConstants.CENTER);
         String textoBotao = isCoordenador ? "Alunos" : "Meu Perfil";
         String iconePath = isCoordenador ? "/images/group.png" : "/images/profile.png";
 
@@ -79,13 +79,13 @@ public class BarraSuperior extends JPanel {
     }
 
     private void initLayout() {
-        labelBemVindo.setBounds(20, 30, 250, 20);
+        labelBemVindo.setBounds(20, 0, 400, 70);
         add(labelBemVindo);
 
-        btnAcaoSecundaria.setBounds(350, 5, 70, 70);
+        btnAcaoSecundaria.setBounds(450, 0, 70, 70);
         add(btnAcaoSecundaria);
 
-        btnSair.setBounds(430, 5, 50, 70);
+        btnSair.setBounds(530, 0, 50, 70);
         add(btnSair);
     }
 }

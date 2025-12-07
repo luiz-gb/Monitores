@@ -234,21 +234,25 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         });
 
         btnGerarResultado.addActionListener(e -> {
-            System.out.println(edital.getStatus());
+            Object[] options = {"Sim", "Não"};
 
-            int resposta = JOptionPane.showConfirmDialog(
+            int resposta = JOptionPane.showOptionDialog(
                     this,
                     "Tem certeza que deseja gerar resultado (não poderá mais editar este edital)?",
                     "Confirmação",
                     JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]
             );
 
             if (resposta == JOptionPane.YES_OPTION) {
                 edital.setStatus(StatusEdital.RESULTADO_PRELIMINAR);
                 cadastroService.salvarEdital(edital);
                 JOptionPane.showMessageDialog(this, "Resultado gerado com sucesso!");
-                new TelaDetalharEditalComResultadoCoordenador(edital);
+                dispose();
+                new TelaDetalharEditalComResultadoCoordenador(edital).setVisible(true);
             }
         });
     }
@@ -303,28 +307,29 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         scrollAlunos.setBounds(30, 465, 530, 150);
         add(scrollAlunos);
 
-        btnVoltar.setBounds(30, 640, 125, 40);
+        btnVoltar.setBounds(25, 640, 100, 40);
         add(btnVoltar);
 
-        btnClonar.setBounds(165, 640, 125, 40);
+        btnClonar.setBounds(137, 640, 100, 40);
         add(btnClonar);
 
-        btnEncerrar.setBounds(300, 640, 125, 40);
+        btnEncerrar.setBounds(249, 640, 100, 40);
         add(btnEncerrar);
 
-        btnGerarResultado.setBounds(300, 600, 125, 40);
+        btnGerarResultado.setBounds(361, 640, 100, 40);
         add(btnGerarResultado);
 
-        btnEditar.setBounds(435, 640, 125, 40);
+        btnCancelarEdicao.setBounds(361, 640, 100, 40);
+        add(btnCancelarEdicao);
+
+        btnEditar.setBounds(473, 640, 100, 40);
         add(btnEditar);
 
-        btnCancelarEdicao.setBounds(300, 640, 125, 40);
-        btnSalvarEdicao.setBounds(435, 640, 125, 40);
-
-        add(btnCancelarEncerramento);
-
-        add(btnCancelarEdicao);
+        btnSalvarEdicao.setBounds(473, 640, 100, 40);
         add(btnSalvarEdicao);
+
+        btnCancelarEncerramento.setBounds(25, 640, 200, 40);
+        add(btnCancelarEncerramento);
     }
 
     private void salvarEdital(int maximoInscricoesAntigo) {

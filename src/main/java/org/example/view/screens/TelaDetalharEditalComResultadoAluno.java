@@ -11,7 +11,11 @@ import org.example.util.CalcularPontuacao;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoSecundario;
 import org.example.view.components.input.InputComboBox;
+import org.example.view.components.links.LinkTexto;
 import org.example.view.components.tables.TabelaPadrao;
+import org.example.view.components.text.LabelTexto;
+import org.example.view.components.text.LabelTitulo;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -21,147 +25,172 @@ import java.util.List;
 
 public class TelaDetalharEditalComResultadoAluno extends BaseTela {
 
-    private JScrollPane scrollAlunos;
     private Edital edital;
-    private InscricaoService inscricaoService;
-    private InputComboBox<Disciplina> comboDisciplinas;
-    private DefaultTableModel modelAlunos;
-    private TabelaPadrao tabelaAlunos;
-    private BotaoSecundario btnVoltar;
-    private JLabel labelDesistir;
     private Aluno aluno;
+    private InscricaoService inscricaoService;
+
+    private InputComboBox<Disciplina> comboDisciplinas;
+    private TabelaPadrao tabelaAlunos;
+    private DefaultTableModel modelAlunos;
+    private JScrollPane scrollAlunos;
+
+    private BotaoSecundario btnVoltar;
+    private LinkTexto linkDesistir;
 
     public TelaDetalharEditalComResultadoAluno(Edital edital, Aluno aluno) {
-        super("Resultado Preliminar Do Edital", 700, 800);
-
+        super("Resultado do Edital", 600, 750);
         this.edital = edital;
         this.aluno = aluno;
         this.inscricaoService = new InscricaoService();
 
-        initView();
+        if (comboDisciplinas == null) {
+            initView();
+        }
+
+        carregarDisciplinasNoCombo();
     }
 
     @Override
     public void initComponents() {
-
         comboDisciplinas = new InputComboBox<>();
+
         comboDisciplinas.addItem(null);
 
-        String[] colAlunos = {"Posição", "Aluno", "CRE", "Média", "Pontuação", "Status"};
-        modelAlunos = new DefaultTableModel(colAlunos, 0);
+        String[] colAlunos = {"Pos.", "Aluno", "CRE", "Média", "Pontuação", "Status"};
+        modelAlunos = new DefaultTableModel(colAlunos, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         tabelaAlunos = new TabelaPadrao(modelAlunos);
 
         scrollAlunos = new JScrollPane(tabelaAlunos);
+        scrollAlunos.getViewport().setBackground(Color.WHITE);
+        scrollAlunos.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230)));
 
         btnVoltar = new BotaoSecundario("Voltar");
 
-        labelDesistir = new JLabel("Desistir da inscrição!");
-        labelDesistir.setVisible(false);
+        linkDesistir = new LinkTexto("Desistir desta vaga", SwingConstants.RIGHT);
+        linkDesistir.setForeground(Color.RED);
+        linkDesistir.setVisible(false);
+    }
 
-        carregarComponents();
+    private void carregarDisciplinasNoCombo() {
+        if (edital != null && edital.getListaDisciplinas() != null) {
+            edital.getListaDisciplinas().forEach(d -> comboDisciplinas.addItem(d));
+        }
     }
 
     @Override
     public void initListeners() {
         comboDisciplinas.addActionListener(e -> {
             Disciplina disciplinaSelecionada = (Disciplina) comboDisciplinas.getSelectedItem();
-
-            if (disciplinaSelecionada != null) carregarTabelaAlunos(disciplinaSelecionada);
+            if (disciplinaSelecionada != null) {
+                carregarTabelaAlunos(disciplinaSelecionada);
+            }
         });
 
         btnVoltar.addActionListener(e -> {
             dispose();
-            new TelaHomeCoordenador();
+            new TelaHomeAluno(aluno).setVisible(true);
         });
 
-        labelDesistir.addMouseListener(new MouseAdapter() {
+        linkDesistir.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int resposta = JOptionPane.showConfirmDialog(
+                if (!linkDesistir.isVisible()) return;
+
+                Object[] options = {"Sim", "Não"};
+
+                int resposta = JOptionPane.showOptionDialog(
                         TelaDetalharEditalComResultadoAluno.this,
-                        "Tem certeza que deseja cancelar sua inscrição (não poderá mais inscrever-se nesta disciplina)?",
-                        "Confirmação",
+                        "Tem certeza que deseja desistir desta vaga?\nEssa ação é irreversível.",
+                        "Confirmar Desistência",
                         JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
+                        JOptionPane.WARNING_MESSAGE,
+                        null,
+                        options,
+                        options[0]
                 );
 
                 if (resposta == JOptionPane.YES_OPTION) {
                     Disciplina disciplinaSelecionada = (Disciplina) comboDisciplinas.getSelectedItem();
+                    try {
+                        inscricaoService.desistirInscricao(aluno, disciplinaSelecionada);
+                        JOptionPane.showMessageDialog(TelaDetalharEditalComResultadoAluno.this, "Desistência registrada com sucesso.");
 
-                    inscricaoService.desistirInscricao(aluno, disciplinaSelecionada);
-                    JOptionPane.showMessageDialog(TelaDetalharEditalComResultadoAluno.this, "Desistência confirmada!");
-                    TelaDetalharEditalComResultadoAluno.this.dispose();
-                    new TelaDetalharEditalComResultadoAluno(edital, aluno);
+                        carregarTabelaAlunos(disciplinaSelecionada);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(TelaDetalharEditalComResultadoAluno.this, "Erro ao desistir: " + ex.getMessage());
+                    }
                 }
             }
         });
     }
 
-    @Override
-    public void initLayout() {
-        JPanel painel = new JPanel(new BorderLayout());
-        painel.setBounds(0, 0, getWidth(), getHeight());
-
-        painel.add(comboDisciplinas, BorderLayout.NORTH);
-        JPanel painelCentro = new JPanel();
-        painelCentro.setLayout(new BorderLayout());
-        painelCentro.add(scrollAlunos, BorderLayout.CENTER);
-        painelCentro.add(labelDesistir, BorderLayout.SOUTH);
-
-        painel.add(painelCentro, BorderLayout.CENTER);
-
-        JPanel rodape = new JPanel();
-        rodape.add(btnVoltar);
-
-        painel.add(rodape, BorderLayout.SOUTH);
-
-        add(painel);
-    }
-
-    private void carregarComponents() {
-        if (!edital.getListaDisciplinas().isEmpty()) edital.getListaDisciplinas().forEach(i -> {
-            comboDisciplinas.addItem(i);
-        });
-    }
-
     private void carregarTabelaAlunos(Disciplina disciplina) {
         List<Inscricao> listaInscricoes = inscricaoService.processarResultadoDaDisciplina(disciplina);
-
         modelAlunos.setRowCount(0);
+        linkDesistir.setVisible(false);
 
         if (!listaInscricoes.isEmpty()) {
             for (int i = 0; i < listaInscricoes.size(); i++) {
-                Inscricao e = listaInscricoes.get(i);
-                int posicao = i + 1;
+                Inscricao inscricao = listaInscricoes.get(i);
 
-                double pontuacaoAluno = CalcularPontuacao.calcularPontuacaoAluno(
-                        e.getDisciplina().getEdital().getPesoCre(),
-                        e.getDisciplina().getEdital().getPesoMedia(),
-                        e.getAlunoCRE(),
-                        e.getAlunoMedia()
+                double pontuacao = CalcularPontuacao.calcularPontuacaoAluno(
+                        edital.getPesoCre(),
+                        edital.getPesoMedia(),
+                        inscricao.getAlunoCRE(),
+                        inscricao.getAlunoMedia()
                 );
 
-                Aluno alunoAtual = e.getAluno();
+                boolean isAlunoLogado = inscricao.getAluno().getEmail().equals(aluno.getEmail());
 
-                boolean alunoExitseNaTabela = alunoAtual.getEmail().equals(aluno.getEmail());
+                String nomeAluno = isAlunoLogado ? inscricao.getAluno().getNome() + " (Você)" : inscricao.getAluno().getNome();
 
-                if (alunoExitseNaTabela && edital.getStatus() != StatusEdital.RESULADO_FINAL && e.getResultadoInscricao() != ResultadoInscricao.DESISTENTE) {
-                    System.out.println("Aluno encontrado!");
-                    labelDesistir.setVisible(true);
+                if (isAlunoLogado &&
+                        edital.getStatus() != StatusEdital.RESULTADO_FINAL &&
+                        inscricao.getResultadoInscricao() != ResultadoInscricao.DESISTENTE) {
+                    linkDesistir.setVisible(true);
                 }
 
                 Object[] linha = {
-                        listaInscricoes.indexOf(e) + 1 + "º",
-                        alunoExitseNaTabela ? e.getAluno().getNome() + " (eu)": e.getAluno().getNome(),
-                        String.valueOf(e.getAlunoCRE()),
-                        String.valueOf(e.getAlunoMedia()),
-                        String.valueOf(pontuacaoAluno),
-                        String.valueOf(e.getResultadoInscricao()).toLowerCase()
+                    (i + 1) + "º",
+                    nomeAluno,
+                    inscricao.getAlunoCRE(),
+                    inscricao.getAlunoMedia(),
+                    String.format("%.2f", pontuacao),
+                    inscricao.getResultadoInscricao()
                 };
-
                 modelAlunos.addRow(linha);
-            };
+            }
         }
     }
 
+    @Override
+    public void initLayout() {
+        LabelTitulo titulo = new LabelTitulo("Resultado Preliminar");
+        titulo.setBounds(0, 20, 600, 30);
+        add(titulo);
+
+        add(new LabelTexto("Selecione a Disciplina:") {{ setBounds(30, 70, 300, 20); }});
+        comboDisciplinas.setBounds(30, 95, 300, 40);
+        add(comboDisciplinas);
+
+        JLabel lblRanking = new JLabel("Classificação dos Candidatos");
+        lblRanking.setFont(new Font("Arial", Font.BOLD, 14));
+        lblRanking.setBounds(30, 150, 300, 20);
+        add(lblRanking);
+
+        scrollAlunos.setBounds(30, 175, 540, 400);
+        add(scrollAlunos);
+
+        linkDesistir.setBounds(30, 585, 540, 20);
+        add(linkDesistir);
+
+        btnVoltar.setBounds(30, 640, 120, 40);
+        add(btnVoltar);
+    }
 }

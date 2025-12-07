@@ -4,5 +4,5 @@ public enum StatusEdital {
     ABERTO,
     ENCERRADO,
     RESULTADO_PRELIMINAR,
-    RESULADO_FINAL
+    RESULTADO_FINAL
 }

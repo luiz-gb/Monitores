@@ -26,13 +26,10 @@ public class TelaHomeAluno extends BaseTela {
     private Aluno aluno;
 
     public TelaHomeAluno(Aluno aluno) {
-        super("Home Aluno", 500, 600);
+        super("Home Aluno", 600, 750);
         getContentPane().setBackground(Color.WHITE);
-
         this.aluno = aluno;
-
         initView();
-
     }
 
     @Override
@@ -57,7 +54,6 @@ public class TelaHomeAluno extends BaseTela {
         scrollPane = new JScrollPane(tabelaEditais);
         scrollPane.getViewport().setBackground(Color.WHITE);
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230)));
-
     }
 
     @Override
@@ -72,8 +68,15 @@ public class TelaHomeAluno extends BaseTela {
                 if (coluna == 4 && linha >= 0) {
                     dispose();
 
-                    if (listaEditais.get(linha).getStatus() == StatusEdital.ENCERRADO || listaEditais.get(linha).getStatus() == StatusEdital.ABERTO) new TelaDetalharEditalSemResultadoAluno(listaEditais.get(linha), aluno);
-                    else if (listaEditais.get(linha).getStatus() == StatusEdital.RESULADO_FINAL || listaEditais.get(linha).getStatus() == StatusEdital.RESULTADO_PRELIMINAR) new TelaDetalharEditalComResultadoAluno(listaEditais.get(linha), aluno);
+                    Edital editalSelecionado = listaEditais.get(linha);
+                    StatusEdital status = editalSelecionado.getStatus();
+
+                    if (status == StatusEdital.ENCERRADO || status == StatusEdital.ABERTO) {
+                        new TelaDetalharEditalSemResultadoAluno(editalSelecionado, aluno).setVisible(true);
+                    }
+                    else if (status == StatusEdital.RESULTADO_FINAL || status == StatusEdital.RESULTADO_PRELIMINAR) {
+                        new TelaDetalharEditalComResultadoAluno(editalSelecionado, aluno).setVisible(true);
+                    }
                 }
             }
         });
@@ -81,13 +84,13 @@ public class TelaHomeAluno extends BaseTela {
 
     @Override
     public void initLayout() {
-        header.setBounds(0, 0, 500, 70);
+        header.setBounds(0, 0, 600, 70);
         add(header);
 
-        labelTituloSecao.setBounds(20, 100, 400, 30);
+        labelTituloSecao.setBounds(20, 100, 500, 30);
         add(labelTituloSecao);
 
-        scrollPane.setBounds(20, 140, 440, 360);
+        scrollPane.setBounds(20, 140, 540, 500);
         add(scrollPane);
     }
 }
