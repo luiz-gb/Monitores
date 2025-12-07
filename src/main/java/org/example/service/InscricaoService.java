@@ -127,4 +127,8 @@ public class InscricaoService {
         inscricao.setResultadoInscricao(ResultadoInscricao.DESISTENTE);
         inscricaoRepository.atualizar(inscricao);
     }
+
+    public List<Inscricao> retornarInscricoesEdital (Edital edital) {
+        return inscricaoRepository.retornarInscricoesDoEdital(edital);
+    }
 }

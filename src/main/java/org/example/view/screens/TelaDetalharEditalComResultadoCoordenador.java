@@ -7,6 +7,7 @@ import org.example.model.Inscricao;
 import org.example.service.CadastroService;
 import org.example.service.InscricaoService;
 import org.example.util.CalcularPontuacao;
+import org.example.util.GeradorDeRelatorios;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoPrimario;
 import org.example.view.components.buttons.BotaoSecundario;
@@ -18,6 +19,7 @@ import org.example.view.components.text.LabelTitulo;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
@@ -128,8 +130,18 @@ public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
         });
 
         btnGerarPdf.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Funcionalidade de PDF em desenvolvimento.");
+            List<Inscricao> listaInscricoesDoEdital = inscricaoService.retornarInscricoesEdital(edital);
+
+            try {
+                GeradorDeRelatorios.gerarPdfEdital(listaInscricoesDoEdital);
+                JOptionPane.showMessageDialog(this, "Relatório gerado!");
+            }
+
+            catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "Arquivo não encontrado!");
+            }
         });
+
     }
 
     private void carregarTabelaAlunos(Disciplina disciplina) {

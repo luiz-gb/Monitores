@@ -128,7 +128,6 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         input.setBackground(editavel ? Color.WHITE : new Color(230, 230, 230));
     }
 
-
     private void alternarModoEdicao(boolean editando) {
         if (editando) {
             JOptionPane.showMessageDialog(this, "Edição habilitada!");
@@ -186,7 +185,6 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
 
         if (!listaInscricoes.isEmpty()) {
             listaInscricoes.forEach(e -> {
-                comboDisciplinas.addItem(e.getDisciplina());
                 Object[] linha = {
                         String.valueOf(listaInscricoes.indexOf(e) + 1),
                         e.getAluno().getNome(),

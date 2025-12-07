@@ -1,16 +1,12 @@
 package org.example.view.screens;
 
 import jakarta.mail.MessagingException;
-import org.example.domain.Mensageiro;
-import org.example.enums.ResultadoInscricao;
-import org.example.enums.StatusEdital;
+import org.example.util.Mensageiro;
 import org.example.exception.CampoVazioException;
 import org.example.model.Aluno;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
-import org.example.model.Inscricao;
 import org.example.service.InscricaoService;
-import org.example.util.CalcularPontuacao;
 import org.example.validator.ComponentValidator;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoSecundario;
@@ -20,9 +16,6 @@ import org.example.view.components.tables.TabelaPadrao;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
 
 public class TelaContatoCoordenador extends BaseTela {
 

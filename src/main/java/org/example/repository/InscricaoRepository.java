@@ -112,4 +112,23 @@ public class InscricaoRepository {
             em.close();
         }
     }
+    public List<Inscricao> retornarInscricoesDoEdital (Edital edital) {
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            return em.createQuery("select i from Inscricao i where i.disciplina.edital = :edital", Inscricao.class)
+                    .setParameter("edital", edital)
+                    .getResultList();
+        }
+
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+
+        finally {
+            em.close();
+        }
+    }
+
 }

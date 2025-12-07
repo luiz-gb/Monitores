@@ -5,6 +5,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.example.domain.*;
 import org.example.enums.Sexo;
 import org.example.util.CentralDeInformacoes;
+import org.example.util.GeradorDeRelatorios;
 import org.example.util.Persistencia;
 
 import java.io.FileNotFoundException;
@@ -377,8 +378,8 @@ public class SistemaUsuario {
                     continue;
                 }
 
-                GeradorDeRelatorios.obterComprovanteDeInscricoesAluno(aluno.getMatricula(), edital.getId(), central);
-                System.out.println("Relatório gerado com sucesso!");
+//                GeradorDeRelatorios.obterComprovanteDeInscricoesAluno(aluno.getMatricula(), edital.getId(), central);
+//                System.out.println("Relatório gerado com sucesso!");
             }
 
             else if (opcao == 9) {

@@ -36,10 +36,10 @@ public class TelaHomeAluno extends BaseTela {
     public void initComponents() {
         homeService = new HomeService();
 
-        header = new BarraSuperior("Aluno", false, () -> {
-            dispose();
-            new TelaLogin();
-        });
+        header = new BarraSuperior( "Aluno", false,
+                () -> { dispose(); new TelaLogin().setVisible(true); },
+                () -> { dispose(); new TelaPerfilAluno(this.aluno, false).setVisible(true); }
+        );
 
         labelTituloSecao = new JLabel("Gerenciamento de Editais");
         labelTituloSecao.setFont(new Font("Arial", Font.BOLD, 18));

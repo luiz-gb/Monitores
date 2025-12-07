@@ -35,10 +35,10 @@ public class TelaHomeCoordenador extends BaseTela {
     public void initComponents() {
         homeService = new HomeService();
 
-        header = new BarraSuperior("Coordenador", true, () -> {
-            dispose();
-            new TelaLogin();
-        });
+        header = new BarraSuperior( "Coordenador", true,
+                () -> { dispose(); new TelaLogin().setVisible(true); },
+                () -> { dispose(); new TelaListarAlunos().setVisible(true); }
+        );
 
         labelTituloSecao = new JLabel("Gerenciamento de Editais");
         labelTituloSecao.setFont(new Font("Arial", Font.BOLD, 18));
