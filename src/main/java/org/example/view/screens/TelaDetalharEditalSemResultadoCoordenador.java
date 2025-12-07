@@ -100,6 +100,10 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         btnSalvarEdicao = new BotaoPrimario("Salvar");
         btnCancelarEdicao = new BotaoSecundario("Cancelar");
 
+        edital.getListaDisciplinas().forEach(e -> {
+            comboDisciplinas.addItem(e);
+        });
+
         carregarValoresComponents();
 
         btnCancelarEncerramento.setVisible(false);
@@ -174,7 +178,6 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
 
         edital.getListaDisciplinas().forEach(e -> {
             Object[] linha = {e.getNomeDisciplina(), e.getVagasRemunerada(), e.getVagasVoluntarias(), "Remover"};
-            comboDisciplinas.addItem(e);
             modelDisc.addRow(linha);
         });
     }
