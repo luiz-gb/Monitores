@@ -208,6 +208,7 @@ public class TelaCadastroEdital extends BaseTela {
             LocalDate dataInicio = campoDataInicio.getData();
             LocalDate dataFinal = campoDataFinal.getData();
 
+            EditalValidator.validarDatas(dataInicio, dataFinal);
             EditalValidator.validarMaxInscricoes(maxInscricoes);
             EditalValidator.validarPeso(pesoCre);
             EditalValidator.validarPeso(pesoMedia);
