@@ -36,8 +36,8 @@ public class TelaHomeCoordenador extends BaseTela {
         homeService = new HomeService();
 
         header = new BarraSuperior( "Coordenador", true,
-                () -> { dispose(); new TelaLogin().setVisible(true); },
-                () -> { dispose(); new TelaListarAlunos().setVisible(true); }
+                () -> { dispose(); new TelaLogin(); },
+                () -> { dispose(); new TelaListarAlunos(); }
         );
 
         labelTituloSecao = new JLabel("Gerenciamento de Editais");

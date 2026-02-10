@@ -3,8 +3,6 @@ package org.example.view.components.base;
 import javax.swing.*;
 
 public abstract class BaseTela extends JFrame {
-
-
     public BaseTela(String titulo, int largura, int altura) {
         super(titulo);
         setSize(largura, altura);
