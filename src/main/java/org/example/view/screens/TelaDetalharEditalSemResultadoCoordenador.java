@@ -4,7 +4,7 @@ import org.example.enums.StatusEdital;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
-import org.example.service.CadastroService;
+import org.example.service.EditalService;
 import org.example.service.InscricaoService;
 import org.example.util.CalcularPontuacao;
 import org.example.validator.EditalValidator;
@@ -34,7 +34,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
     private InputData campoDataInicio, campoDataFim;
     private InputTexto campoMaxInscricoes, campoPesoCre, campoPesoMedia;
     private Edital edital;
-    private CadastroService cadastroService;
+    private EditalService editalService;
     private InscricaoService inscricaoService;
     private TabelaPadrao tabelaDisciplinas;
     private TabelaPadrao tabelaAlunos;
@@ -53,7 +53,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         this.edital = edital;
 
         inscricaoService = new InscricaoService();
-        cadastroService = new CadastroService();
+        editalService = new EditalService();
 
         initView();
     }
@@ -231,7 +231,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         btnEncerrar.addActionListener(e -> {
             if (telaContatoAberto != null) telaContatoAberto.dispose();
             edital.setStatus(StatusEdital.ENCERRADO);
-            cadastroService.salvarEdital(edital);
+            editalService.salvarEdital(edital);
             JOptionPane.showMessageDialog(this, "Edital encerrado com sucesso!");
         });
 
@@ -239,7 +239,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
             try {
                 EditalValidator.validarCancelarEncerramentoEdital(edital.getDataFinal());
                 edital.setStatus(StatusEdital.ABERTO);
-                cadastroService.salvarEdital(edital);
+                editalService.salvarEdital(edital);
                 JOptionPane.showMessageDialog(this, "Cancelamento de encerramento de edital concluído!");
 
                 if (telaContatoAberto != null) telaContatoAberto.dispose();
@@ -268,7 +268,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
 
             if (resposta == JOptionPane.YES_OPTION) {
                 edital.setStatus(StatusEdital.RESULTADO_PRELIMINAR);
-                cadastroService.salvarEdital(edital);
+                editalService.salvarEdital(edital);
                 JOptionPane.showMessageDialog(this, "Resultado gerado com sucesso!");
                 if (telaContatoAberto != null) telaContatoAberto.dispose();
                 dispose();
@@ -407,7 +407,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
             edital.setDataInicio(dataInicio);
             edital.setDataFinal(dataFinal);
 
-            cadastroService.salvarEdital(edital);
+            editalService.salvarEdital(edital);
             carregarValoresComponents();
             alternarModoEdicao(false);
 

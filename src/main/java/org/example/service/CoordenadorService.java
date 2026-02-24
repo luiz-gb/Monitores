@@ -15,6 +15,17 @@ public class CoordenadorService {
         alunoRepository = new AlunoRepository();
         coordenadorRepository = new CoordenaorRepository();
     }
+
+    /**
+     * Realiza o cadastro de um coordenador.
+     *
+     * @param email Email do coordenador.
+     * @param senha Senha de acesso.
+     *
+     * @throws UsuarioJaExisteException Caso o email já esteja registrado
+     * como aluno ou coordenador no sistema.
+     */
+
     public void cadastrarCoordenador(String email, String senha) throws UsuarioJaExisteException {
         Aluno aluno = alunoRepository.buscarPorEmail(email);
         Coordenador coordenador = coordenadorRepository.buscarPorEmail(email);
@@ -30,14 +41,4 @@ public class CoordenadorService {
 
         coordenadorRepository.salvar(coordenadorNovo);
     }
-
-    /**
-     * Realiza o cadastro de um coordenador.
-     *
-     * @param email Email do coordenador.
-     * @param senha Senha de acesso.
-     *
-     * @throws UsuarioJaExisteException Caso o email já esteja registrado
-     * como aluno ou coordenador no sistema.
-     */
 }

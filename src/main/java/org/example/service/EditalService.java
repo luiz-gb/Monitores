@@ -4,21 +4,29 @@ import org.example.enums.StatusEdital;
 import org.example.exception.ListaVaziaException;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
-import org.example.repository.AlunoRepository;
-import org.example.repository.CoordenaorRepository;
 import org.example.repository.EditalRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class HomeService {
+/**
+ * Serviço responsável pelo cadastro de  editais.
+ *
+ * <p>Esta classe se comunica com os repositórios e aplica regras
+ * fundamentais de validação como verificação de existência de email,
+ * matrícula duplicada e lista de disciplinas obrigatória no edital.</p>
+ *
+ * @author Davi Melo
+ */
+
+public class EditalService {
     public List<Edital> retornarEditais () {
         return editalRepository.retornarTodosEditais();
     }
 
     private EditalRepository editalRepository;
 
-    public HomeService () {
+    public EditalService() {
         editalRepository = new EditalRepository();
     }
 
@@ -38,6 +46,7 @@ public class HomeService {
      *
      * @throws ListaVaziaException Caso a lista de disciplinas esteja vazia.
      */
+
     public void cadastrarEdital(LocalDate dataInicio, LocalDate dataFinal, int maximoInscricoes,
                                 double pesoCre, double pesoMedia, List<Disciplina> listaDisciplinas)
             throws ListaVaziaException {
@@ -61,11 +70,6 @@ public class HomeService {
         editalRepository.salvar(edital);
     }
 
-    /**
-     * Atualiza os dados de um edital já salvo.
-     *
-     * @param edital Objeto edital atualizado.
-     */
     public void salvarEdital(Edital edital) {
         editalRepository.editar(edital);
     }

@@ -4,7 +4,7 @@ import org.example.enums.StatusEdital;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
-import org.example.service.CadastroService;
+import org.example.service.EditalService;
 import org.example.service.InscricaoService;
 import org.example.util.CalcularPontuacao;
 import org.example.util.GeradorDeRelatorios;
@@ -26,7 +26,7 @@ public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
 
     private Edital edital;
     private InscricaoService inscricaoService;
-    private CadastroService cadastroService;
+    private EditalService editalService;
 
     private InputComboBox<Disciplina> comboDisciplinas;
     private TabelaPadrao tabelaAlunos;
@@ -40,7 +40,7 @@ public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
         super("Resultado do Edital", 700, 800);
         this.edital = edital;
         this.inscricaoService = new InscricaoService();
-        this.cadastroService = new CadastroService();
+        this.editalService = new EditalService();
 
         if (comboDisciplinas == null) {
             initComponents();
@@ -121,7 +121,7 @@ public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
 
             if (resposta == JOptionPane.YES_OPTION) {
                 edital.setStatus(StatusEdital.RESULTADO_FINAL);
-                cadastroService.salvarEdital(edital);
+                editalService.salvarEdital(edital);
 
                 JOptionPane.showMessageDialog(this, "Resultado Final Lançado com Sucesso!");
                 dispose();

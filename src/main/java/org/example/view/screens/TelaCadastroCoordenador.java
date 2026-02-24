@@ -1,7 +1,6 @@
 package org.example.view.screens;
 
 import org.example.exception.*;
-import org.example.service.CadastroService;
 import org.example.service.CoordenadorService;
 import org.example.validator.ComponentValidator;
 import org.example.view.components.base.BaseTela;
