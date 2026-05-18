@@ -1,7 +1,11 @@
 package org.example.view.screens;
 
 import org.example.exception.*;
-import org.example.service.CadastroService;
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
+import org.example.repository.AlunoRepository;
+import org.example.repository.CoordenadorRepository;
+import org.example.service.AlunoService;
 import org.example.validator.ComponentValidator;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoPrimario;
@@ -25,11 +29,15 @@ public class TelaCadastroAluno extends BaseTela {
     private JPasswordField campoSenha;
     private BotaoPrimario btnCadastrar;
     private BotaoPrimario btnVoltar;
-    private CadastroService cadastroService;
+    private AlunoService alunoService;
 
     public TelaCadastroAluno() {
         super("Cadastro de Aluno", 400, 500);
-        cadastroService = new CadastroService();
+
+        IAlunoRepository alunoRepo = new AlunoRepository();
+        ICoordenadorRepository coordRepo = new CoordenadorRepository();
+
+        alunoService = new AlunoService(alunoRepo, coordRepo);
         initView();
     }
 
@@ -71,7 +79,7 @@ public class TelaCadastroAluno extends BaseTela {
                 ComponentValidator.validarMatricula(matricula);
                 ComponentValidator.validarSenha(senha);
 
-                cadastroService.cadastrarAluno(email, senha, matricula, nome);
+                alunoService.cadastrarAluno(email, senha, matricula, nome);
 
                 JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!");
                 dispose();

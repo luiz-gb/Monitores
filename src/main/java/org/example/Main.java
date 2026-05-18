@@ -1,14 +1,15 @@
 package org.example;
 
-import org.example.repository.CoordenaorRepository;
+import org.example.interfaces.ICoordenadorRepository;
+import org.example.repository.CoordenadorRepository;
 import org.example.view.screens.TelaCadastroCoordenador;
 import org.example.view.screens.TelaLogin;
 
 public class Main {
     public static void main(String[] args) {
-        CoordenaorRepository coordenaorRepository = new CoordenaorRepository();
+        ICoordenadorRepository coordenadorRepository = new CoordenadorRepository();
 
-        if (!coordenaorRepository.verificarSeTemRegistro()) {
+        if (!coordenadorRepository.verificarSeTemRegistro()) {
             TelaCadastroCoordenador telaCadastroCoordenador = new TelaCadastroCoordenador();
             telaCadastroCoordenador.setVisible(true);
         }

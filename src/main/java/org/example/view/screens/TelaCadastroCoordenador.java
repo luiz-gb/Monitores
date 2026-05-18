@@ -1,7 +1,11 @@
 package org.example.view.screens;
 
 import org.example.exception.*;
-import org.example.service.CadastroService;
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
+import org.example.repository.AlunoRepository;
+import org.example.repository.CoordenadorRepository;
+import org.example.service.CoordenadorService;
 import org.example.validator.ComponentValidator;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoPrimario;
@@ -18,11 +22,15 @@ public class TelaCadastroCoordenador extends BaseTela {
     private InputTexto campoEmail;
     private InputSenha campoSenha;
     private BotaoPrimario btnCadastrar;
-    private CadastroService cadastroService;
+    private CoordenadorService coordenadorService;
 
     public TelaCadastroCoordenador() {
         super("Cadastro de Coordenador", 400, 500);
-        cadastroService = new CadastroService();
+
+        IAlunoRepository alunoRepo = new AlunoRepository();
+        ICoordenadorRepository coordRepo = new CoordenadorRepository();
+
+        coordenadorService = new CoordenadorService(alunoRepo, coordRepo);
         initView();
     }
 
@@ -46,7 +54,7 @@ public class TelaCadastroCoordenador extends BaseTela {
                 ComponentValidator.validarEmail(email);
                 ComponentValidator.validarSenha(senha);
 
-                cadastroService.cadastrarCoordenador(email, senha);
+                coordenadorService.cadastrarCoordenador(email, senha);
 
                 JOptionPane.showMessageDialog(this, "Cadastro de coordenador concluído!");
                 dispose();

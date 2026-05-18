@@ -2,10 +2,12 @@ package org.example.view.screens;
 
 import org.example.enums.ResultadoInscricao;
 import org.example.enums.StatusEdital;
+import org.example.interfaces.IInscricaoRepository;
 import org.example.model.Aluno;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
+import org.example.repository.InscricaoRepository;
 import org.example.service.InscricaoService;
 import org.example.util.CalcularPontuacao;
 import org.example.view.components.base.BaseTela;
@@ -41,7 +43,9 @@ public class TelaDetalharEditalComResultadoAluno extends BaseTela {
         super("Resultado do Edital", 600, 750);
         this.edital = edital;
         this.aluno = aluno;
-        this.inscricaoService = new InscricaoService();
+
+        IInscricaoRepository incricaoRepo = new InscricaoRepository();
+        this.inscricaoService = new InscricaoService(incricaoRepo);
 
         if (comboDisciplinas == null) {
             initView();

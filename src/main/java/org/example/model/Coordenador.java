@@ -1,12 +1,14 @@
 package org.example.model;
 
 import jakarta.persistence.*;
+import org.example.enums.TipoPerfil;
+import org.example.interfaces.UsuarioAutenticavel;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "coordenador")
-public class Coordenador {
+public class Coordenador implements UsuarioAutenticavel {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -48,5 +50,9 @@ public class Coordenador {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public TipoPerfil getTipoPerfil() {
+        return TipoPerfil.COORDENADOR;
     }
 }

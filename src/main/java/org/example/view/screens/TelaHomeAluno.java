@@ -1,9 +1,11 @@
 package org.example.view.screens;
 
 import org.example.enums.StatusEdital;
+import org.example.interfaces.IEditalRepository;
 import org.example.model.Aluno;
 import org.example.model.Edital;
-import org.example.service.HomeService;
+import org.example.repository.EditalRepository;
+import org.example.service.EditalService;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.header.BarraSuperior;
 import org.example.view.components.tables.ModeloTabelaEdital;
@@ -22,7 +24,7 @@ public class TelaHomeAluno extends BaseTela {
     private JLabel labelTituloSecao;
     private TabelaPadrao tabelaEditais;
     private JScrollPane scrollPane;
-    private HomeService homeService;
+    private EditalService editalService;
     private Aluno aluno;
 
     public TelaHomeAluno(Aluno aluno) {
@@ -34,7 +36,9 @@ public class TelaHomeAluno extends BaseTela {
 
     @Override
     public void initComponents() {
-        homeService = new HomeService();
+
+        IEditalRepository editalRepo = new EditalRepository();
+        editalService = new EditalService(editalRepo);
 
         header = new BarraSuperior( "Aluno", false,
                 () -> { dispose(); new TelaLogin().setVisible(true); },
@@ -45,7 +49,7 @@ public class TelaHomeAluno extends BaseTela {
         labelTituloSecao.setFont(new Font("Arial", Font.BOLD, 18));
         labelTituloSecao.setForeground(new Color(30, 30, 30));
 
-        listaEditais = homeService.retornarEditais();
+        listaEditais = editalService.retornarEditais();
 
         tabelaEditais = new TabelaPadrao(new ModeloTabelaEdital(listaEditais));
 
