@@ -1,6 +1,8 @@
 package org.example.view.screens;
 
 import org.example.exception.*;
+import org.example.interfaces.IEditalRepository; // Importando a interface
+import org.example.repository.EditalRepository; // Importando o repositório concreto
 import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.service.EditalService;
@@ -63,14 +65,20 @@ public class TelaCadastroEdital extends BaseTela {
 
     public TelaCadastroEdital() {
         super("Cadastro de Edital", 500, 600);
-        editalService = new EditalService();
+
+        IEditalRepository editalRepo = new EditalRepository();
+        editalService = new EditalService(editalRepo);
+
         listaDisciplinas = new ArrayList<>();
         initView();
     }
 
     public TelaCadastroEdital(Edital edital) {
         super("Cadastro de Edital", 500, 600);
-        editalService = new EditalService();
+
+        IEditalRepository editalRepo = new EditalRepository();
+        editalService = new EditalService(editalRepo);
+
         listaDisciplinas = new ArrayList<>();
         this.edital = edital;
         initView();

@@ -3,9 +3,11 @@ package org.example.view.screens;
 import org.example.exception.AlunoJaInscritoException;
 import org.example.exception.InscricaoInvalida;
 import org.example.exception.NumeroInvalidoException;
+import org.example.interfaces.IInscricaoRepository;
 import org.example.model.Aluno;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
+import org.example.repository.InscricaoRepository;
 import org.example.service.InscricaoService;
 import org.example.validator.InscricaoValidator;
 import org.example.view.components.base.BaseTela;
@@ -44,7 +46,9 @@ public class TelaDetalharEditalSemResultadoAluno extends BaseTela {
 
         this.edital = edital;
         this.aluno = aluno;
-        this.inscricaoService = new InscricaoService();
+
+        IInscricaoRepository incricaoRepo = new InscricaoRepository();
+        this.inscricaoService = new InscricaoService(incricaoRepo);
 
         initView();
 

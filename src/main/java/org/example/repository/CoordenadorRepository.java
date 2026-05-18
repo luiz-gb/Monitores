@@ -1,52 +1,41 @@
 package org.example.repository;
 
 import jakarta.persistence.EntityManager;
+import org.example.interfaces.ICoordenadorRepository;
 import org.example.model.Coordenador;
 import org.example.util.JPAUtil;
 
-public class CoordenaorRepository {
-    public void salvar (Coordenador coordeandor) {
-        EntityManager em = JPAUtil.getEntityManager();
+public class CoordenadorRepository implements ICoordenadorRepository {
 
-        try {
+    @Override
+    public void salvar (Coordenador coordenador) {
+        try (EntityManager em = JPAUtil.getEntityManager()) {
             em.getTransaction().begin();
-            em.persist(coordeandor);
+            em.persist(coordenador);
             em.getTransaction().commit();
-        }
-
-        finally {
-            em.close();
+        } catch (Exception e) {
+            throw e;
         }
     }
 
+    @Override
     public Coordenador buscarPorEmail (String email) {
-        EntityManager em = JPAUtil.getEntityManager();
-
-        try {
+        try (EntityManager em = JPAUtil.getEntityManager()) {
             return em.createQuery("select a from Coordenador a where a.email = :email", Coordenador.class)
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (Exception e) {
             return null;
-        } finally {
-            em.close();
         }
     }
 
+    @Override
     public boolean verificarSeTemRegistro () {
-        EntityManager em = JPAUtil.getEntityManager();
-
-        try {
-            em.createQuery("select a from Coordenador a").getSingleResult();
+        try (EntityManager em = JPAUtil.getEntityManager()) {
+            em.createQuery("select a from Coordenador a").setMaxResults(1).getSingleResult();
             return true;
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
-        }
-
-        finally {
-            em.close();
         }
     }
 }

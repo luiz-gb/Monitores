@@ -1,6 +1,10 @@
 package org.example.view.screens;
 
 import org.example.exception.*;
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
+import org.example.repository.AlunoRepository;
+import org.example.repository.CoordenadorRepository;
 import org.example.service.CoordenadorService;
 import org.example.validator.ComponentValidator;
 import org.example.view.components.base.BaseTela;
@@ -22,7 +26,11 @@ public class TelaCadastroCoordenador extends BaseTela {
 
     public TelaCadastroCoordenador() {
         super("Cadastro de Coordenador", 400, 500);
-        coordenadorService = new CoordenadorService();
+
+        IAlunoRepository alunoRepo = new AlunoRepository();
+        ICoordenadorRepository coordRepo = new CoordenadorRepository();
+
+        coordenadorService = new CoordenadorService(alunoRepo, coordRepo);
         initView();
     }
 

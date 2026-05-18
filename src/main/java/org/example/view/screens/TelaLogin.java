@@ -1,7 +1,13 @@
 package org.example.view.screens;
 
+import org.example.enums.TipoPerfil;
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
+import org.example.interfaces.UsuarioAutenticavel;
 import org.example.model.Aluno;
 import org.example.model.Coordenador;
+import org.example.repository.AlunoRepository;
+import org.example.repository.CoordenadorRepository;
 import org.example.service.LoginService;
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoPrimario;
@@ -28,7 +34,11 @@ public class TelaLogin extends BaseTela {
 
     public TelaLogin() {
         super("Login", 400, 500);
-        loginService = new LoginService();
+
+        IAlunoRepository alunoRepo = new AlunoRepository();
+        ICoordenadorRepository coordRepo = new CoordenadorRepository();
+
+        loginService = new LoginService(alunoRepo, coordRepo);
         initView();
     }
 
@@ -53,14 +63,18 @@ public class TelaLogin extends BaseTela {
             String email = campoEmail.getText();
             String senha = new String(campoSenha.getPassword());
 
-            Object usuario = loginService.fazerLogin(email, senha);
+            UsuarioAutenticavel usuario = loginService.fazerLogin(email, senha);
 
             if (usuario == null) {
                 JOptionPane.showMessageDialog(this, "Email ou senha inválidos, tente novamente!");
-            } else if (usuario instanceof Aluno) {
+            }
+            // 3. ADEUS INSTANCEOF! Agora verificamos o perfil pelo Enum
+            else if (usuario.getTipoPerfil() == TipoPerfil.ALUNO) {
                 dispose();
+                // Fazemos o cast seguro apenas na hora de passar para a tela
                 new TelaHomeAluno((Aluno) usuario);
-            } else if (usuario instanceof Coordenador) {
+            }
+            else if (usuario.getTipoPerfil() == TipoPerfil.COORDENADOR) {
                 dispose();
                 new TelaHomeCoordenador();
             }

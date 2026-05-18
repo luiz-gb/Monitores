@@ -1,21 +1,22 @@
 package org.example.service;
 
 import org.example.exception.UsuarioJaExisteException;
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
 import org.example.model.Aluno;
 import org.example.model.Coordenador;
-import org.example.repository.AlunoRepository;
-import org.example.repository.CoordenaorRepository;
-import org.example.repository.EditalRepository;
 
 import java.util.List;
 
 public class AlunoService {
-    private AlunoRepository alunoRepository;
-    private CoordenaorRepository coordenadorRepository;
-    public AlunoService () {
-        alunoRepository = new AlunoRepository();
-        coordenadorRepository = new CoordenaorRepository();
+    private final IAlunoRepository alunoRepository;
+    private final ICoordenadorRepository coordenadorRepository;
+
+    public AlunoService (IAlunoRepository alunoRepository, ICoordenadorRepository coordenadorRepository) {
+        this.alunoRepository = alunoRepository;
+        this.coordenadorRepository = coordenadorRepository;
     }
+
     public List<Aluno> retornarAlunos () {
         return alunoRepository.retornarTodosAlunos();
     }

@@ -1,6 +1,10 @@
 package org.example.view.screens;
 
 import org.example.exception.*;
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
+import org.example.repository.AlunoRepository;
+import org.example.repository.CoordenadorRepository;
 import org.example.service.AlunoService;
 import org.example.validator.ComponentValidator;
 import org.example.view.components.base.BaseTela;
@@ -29,7 +33,11 @@ public class TelaCadastroAluno extends BaseTela {
 
     public TelaCadastroAluno() {
         super("Cadastro de Aluno", 400, 500);
-        alunoService = new AlunoService();
+
+        IAlunoRepository alunoRepo = new AlunoRepository();
+        ICoordenadorRepository coordRepo = new CoordenadorRepository();
+
+        alunoService = new AlunoService(alunoRepo, coordRepo);
         initView();
     }
 

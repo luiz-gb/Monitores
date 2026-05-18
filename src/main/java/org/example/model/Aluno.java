@@ -2,12 +2,13 @@ package org.example.model;
 
 import jakarta.persistence.*;
 import org.example.enums.TipoPerfil;
+import org.example.interfaces.UsuarioAutenticavel;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "aluno")
-public class Aluno {
+public class Aluno implements UsuarioAutenticavel {
 
     @Id
     @Column
@@ -29,7 +30,6 @@ public class Aluno {
     public Aluno() {
 
     }
-
 
     public Aluno(String matricula, String email, String nome, String senha) {
         this.matricula = matricula;
@@ -76,5 +76,9 @@ public class Aluno {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public TipoPerfil getTipoPerfil() {
+        return TipoPerfil.ALUNO;
     }
 }

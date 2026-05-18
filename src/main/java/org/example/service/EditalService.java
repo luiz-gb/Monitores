@@ -2,9 +2,9 @@ package org.example.service;
 
 import org.example.enums.StatusEdital;
 import org.example.exception.ListaVaziaException;
+import org.example.interfaces.IEditalRepository;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
-import org.example.repository.EditalRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,10 +24,10 @@ public class EditalService {
         return editalRepository.retornarTodosEditais();
     }
 
-    private EditalRepository editalRepository;
+    private final IEditalRepository editalRepository;
 
-    public EditalService() {
-        editalRepository = new EditalRepository();
+    public EditalService(IEditalRepository editalRepository) {
+        this.editalRepository = editalRepository;
     }
 
     /**

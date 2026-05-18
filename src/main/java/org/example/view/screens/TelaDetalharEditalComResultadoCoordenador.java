@@ -1,9 +1,13 @@
 package org.example.view.screens;
 
 import org.example.enums.StatusEdital;
+import org.example.interfaces.IEditalRepository;
+import org.example.interfaces.IInscricaoRepository;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
+import org.example.repository.EditalRepository;
+import org.example.repository.InscricaoRepository;
 import org.example.service.EditalService;
 import org.example.service.InscricaoService;
 import org.example.util.CalcularPontuacao;
@@ -39,8 +43,12 @@ public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
     public TelaDetalharEditalComResultadoCoordenador(Edital edital) {
         super("Resultado do Edital", 700, 800);
         this.edital = edital;
-        this.inscricaoService = new InscricaoService();
-        this.editalService = new EditalService();
+
+        IInscricaoRepository incricaoRepo = new InscricaoRepository();
+        this.inscricaoService = new InscricaoService(incricaoRepo);
+
+        IEditalRepository editalRepo = new EditalRepository();
+        editalService = new EditalService(editalRepo);
 
         if (comboDisciplinas == null) {
             initComponents();
@@ -109,14 +117,14 @@ public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
         btnFecharEdital.addActionListener(e -> {
             Object[] options = {"Sim", "Não"};
             int resposta = JOptionPane.showOptionDialog(
-                this,
-                "Deseja realmente encerrar o edital?\nO resultado será consolidado como FINAL.",
-                "Confirmar Fechamento",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]
+                    this,
+                    "Deseja realmente encerrar o edital?\nO resultado será consolidado como FINAL.",
+                    "Confirmar Fechamento",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]
             );
 
             if (resposta == JOptionPane.YES_OPTION) {
@@ -133,15 +141,14 @@ public class TelaDetalharEditalComResultadoCoordenador extends BaseTela {
             List<Inscricao> listaInscricoesDoEdital = inscricaoService.retornarInscricoesEdital(edital);
 
             try {
-                GeradorDeRelatorios.gerarPdfEdital(listaInscricoesDoEdital);
-                JOptionPane.showMessageDialog(this, "Relatório gerado!");
-            }
+                GeradorDeRelatorios gerador = new GeradorDeRelatorios(this.inscricaoService);
+                gerador.gerarPdfEdital(listaInscricoesDoEdital);
 
-            catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "Relatório gerado!");
+            } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "Arquivo não encontrado!");
             }
         });
-
     }
 
     private void carregarTabelaAlunos(Disciplina disciplina) {

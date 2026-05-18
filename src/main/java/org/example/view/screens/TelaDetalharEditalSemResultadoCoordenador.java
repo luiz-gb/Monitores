@@ -1,9 +1,13 @@
 package org.example.view.screens;
 
 import org.example.enums.StatusEdital;
+import org.example.interfaces.IEditalRepository;
+import org.example.interfaces.IInscricaoRepository;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
+import org.example.repository.EditalRepository;
+import org.example.repository.InscricaoRepository;
 import org.example.service.EditalService;
 import org.example.service.InscricaoService;
 import org.example.util.CalcularPontuacao;
@@ -52,8 +56,11 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
         super("Detalhes do Edital", 600, 750);
         this.edital = edital;
 
-        inscricaoService = new InscricaoService();
-        editalService = new EditalService();
+        IInscricaoRepository incricaoRepo = new InscricaoRepository();
+        this.inscricaoService = new InscricaoService(incricaoRepo);
+
+        IEditalRepository editalRepo = new EditalRepository();
+        editalService = new EditalService(editalRepo);
 
         initView();
     }

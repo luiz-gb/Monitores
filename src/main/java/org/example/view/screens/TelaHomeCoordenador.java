@@ -1,7 +1,9 @@
 package org.example.view.screens;
 
 import org.example.enums.StatusEdital;
+import org.example.interfaces.IEditalRepository;
 import org.example.model.Edital;
+import org.example.repository.EditalRepository;
 import org.example.service.EditalService;
 import org.example.view.components.header.BarraSuperior;
 import org.example.view.components.base.BaseTela;
@@ -33,7 +35,9 @@ public class TelaHomeCoordenador extends BaseTela {
 
     @Override
     public void initComponents() {
-        editalService = new EditalService();
+
+        IEditalRepository editalRepo = new EditalRepository();
+        editalService = new EditalService(editalRepo);
 
         header = new BarraSuperior( "Coordenador", true,
                 () -> { dispose(); new TelaLogin(); },

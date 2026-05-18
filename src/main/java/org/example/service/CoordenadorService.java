@@ -1,19 +1,18 @@
 package org.example.service;
 
 import org.example.exception.UsuarioJaExisteException;
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
 import org.example.model.Aluno;
 import org.example.model.Coordenador;
-import org.example.repository.AlunoRepository;
-import org.example.repository.CoordenaorRepository;
-import org.example.repository.EditalRepository;
 
 public class CoordenadorService {
-    private AlunoRepository alunoRepository;
-    private CoordenaorRepository coordenadorRepository;
+    private final IAlunoRepository alunoRepository;
+    private final ICoordenadorRepository coordenadorRepository;
 
-    public CoordenadorService(){
-        alunoRepository = new AlunoRepository();
-        coordenadorRepository = new CoordenaorRepository();
+    public CoordenadorService(IAlunoRepository alunoRepository, ICoordenadorRepository coordenadorRepository){
+        this.alunoRepository = alunoRepository;
+        this.coordenadorRepository = coordenadorRepository;
     }
 
     /**

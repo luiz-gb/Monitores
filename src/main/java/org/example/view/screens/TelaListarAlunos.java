@@ -2,6 +2,12 @@ package org.example.view.screens;
 
 import org.example.model.Aluno;
 import org.example.service.AlunoService;
+
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
+import org.example.repository.AlunoRepository;
+import org.example.repository.CoordenadorRepository;
+
 import org.example.view.components.base.BaseTela;
 import org.example.view.components.buttons.BotaoPrimario;
 import org.example.view.components.buttons.BotaoSecundario;
@@ -38,7 +44,12 @@ public class TelaListarAlunos extends BaseTela {
         super("Listagem de Alunos", 600, 750);
         getContentPane().setBackground(Color.WHITE);
 
-        alunoService = new AlunoService();
+        IAlunoRepository alunoRepo = new AlunoRepository();
+        ICoordenadorRepository coordRepo = new CoordenadorRepository();
+
+        // 2. Passamos as dependências prontas para o Service
+        alunoService = new AlunoService(alunoRepo, coordRepo);
+
         listaCompletaAlunos = alunoService.retornarAlunos();
 
         initView();
