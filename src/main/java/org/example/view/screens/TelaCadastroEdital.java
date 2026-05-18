@@ -1,9 +1,11 @@
 package org.example.view.screens;
 
 import org.example.exception.*;
+import org.example.interfaces.IEditalRepository; // Importando a interface
+import org.example.repository.EditalRepository; // Importando o repositório concreto
 import org.example.model.Disciplina;
 import org.example.model.Edital;
-import org.example.service.CadastroService;
+import org.example.service.EditalService;
 import org.example.validator.DisciplinaValidator;
 import org.example.validator.EditalValidator;
 import org.example.view.components.base.BaseTela;
@@ -57,20 +59,26 @@ public class TelaCadastroEdital extends BaseTela {
 
     private BotaoPrimario btnSalvar;
     private BotaoSecundario btnCancelar;
-    private CadastroService cadastroService;
+    private EditalService editalService;
 
     private Edital edital;
 
     public TelaCadastroEdital() {
         super("Cadastro de Edital", 500, 600);
-        cadastroService = new CadastroService();
+
+        IEditalRepository editalRepo = new EditalRepository();
+        editalService = new EditalService(editalRepo);
+
         listaDisciplinas = new ArrayList<>();
         initView();
     }
 
     public TelaCadastroEdital(Edital edital) {
         super("Cadastro de Edital", 500, 600);
-        cadastroService = new CadastroService();
+
+        IEditalRepository editalRepo = new EditalRepository();
+        editalService = new EditalService(editalRepo);
+
         listaDisciplinas = new ArrayList<>();
         this.edital = edital;
         initView();
@@ -214,7 +222,7 @@ public class TelaCadastroEdital extends BaseTela {
             EditalValidator.validarPeso(pesoMedia);
             EditalValidator.validarPesos(Float.parseFloat(pesoCre), Float.parseFloat(pesoMedia));
 
-            cadastroService.cadastrarEdital(dataInicio, dataFinal, Integer.parseInt(maxInscricoes),
+            editalService.cadastrarEdital(dataInicio, dataFinal, Integer.parseInt(maxInscricoes),
                     Double.parseDouble(pesoCre), Double.parseDouble(pesoMedia), listaDisciplinas);
 
             JOptionPane.showMessageDialog(this, "Edital cadastrado com sucesso!");

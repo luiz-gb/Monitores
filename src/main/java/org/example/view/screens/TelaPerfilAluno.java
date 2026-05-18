@@ -1,10 +1,15 @@
 package org.example.view.screens;
 
 import org.example.exception.CampoInvalidoException;
-import org.example.exception.CampoTamanhoInvalidoException;
 import org.example.exception.CampoVazioException;
+import org.example.interfaces.IAlunoRepository;
+import org.example.interfaces.ICoordenadorRepository;
+import org.example.interfaces.IInscricaoRepository;
 import org.example.model.Aluno;
 import org.example.model.Inscricao;
+import org.example.repository.AlunoRepository;
+import org.example.repository.CoordenadorRepository;
+import org.example.repository.InscricaoRepository;
 import org.example.service.AlunoService;
 import org.example.service.InscricaoService;
 import org.example.util.CalcularPontuacao;
@@ -48,8 +53,14 @@ public class TelaPerfilAluno extends BaseTela {
         super("Perfil do Aluno", 600, 750);
         this.aluno = aluno;
         this.isCoordenador = isCoordenador;
-        this.alunoService = new AlunoService();
-        this.inscricaoService = new InscricaoService();
+
+        IAlunoRepository alunoRepo = new AlunoRepository();
+        ICoordenadorRepository coordRepo = new CoordenadorRepository();
+
+        this.alunoService = new AlunoService(alunoRepo, coordRepo);
+
+        IInscricaoRepository incricaoRepo = new InscricaoRepository();
+        this.inscricaoService = new InscricaoService(incricaoRepo);
 
         initView();
         preencherDados();

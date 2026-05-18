@@ -4,11 +4,11 @@ import org.example.enums.ResultadoInscricao;
 import org.example.enums.StatusEdital;
 import org.example.exception.AlunoJaInscritoException;
 import org.example.exception.InscricaoInvalida;
+import org.example.interfaces.IInscricaoRepository;
 import org.example.model.Aluno;
 import org.example.model.Disciplina;
 import org.example.model.Edital;
 import org.example.model.Inscricao;
-import org.example.repository.InscricaoRepository;
 import org.example.util.CalcularPontuacao;
 import org.example.validator.EditalValidator;
 
@@ -17,10 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InscricaoService {
-    private InscricaoRepository inscricaoRepository;
 
-    public InscricaoService () {
-        inscricaoRepository = new InscricaoRepository();
+    private final IInscricaoRepository inscricaoRepository;
+
+    public InscricaoService (IInscricaoRepository inscricaoRepository) {
+        this.inscricaoRepository = inscricaoRepository;
     }
 
     public void criarInscricao (Aluno aluno, Disciplina disciplina, Double cre, Double media) throws InscricaoInvalida, AlunoJaInscritoException {
@@ -35,6 +36,7 @@ public class InscricaoService {
         verificarEditalEncerrado(inscricao);
         verificarAlunoJaPossuiInscricao(inscricao);
         verificarAlunoPassouLimiteInscricoes(inscricao);
+
         inscricaoRepository.salvar(inscricao);
     }
 
@@ -44,20 +46,26 @@ public class InscricaoService {
 
         int quantidadeInscricoes = inscricaoRepository.retornarQuantidadeInscricoesAluno(aluno, edital);
 
-        if (quantidadeInscricoes >= edital.getMaximoInscricoesPorAluno()) throw new InscricaoInvalida("O aluno atingiu o limite máximo de inscrições nesta disciplina!");
+        if (quantidadeInscricoes >= edital.getMaximoInscricoesPorAluno()) {
+            throw new InscricaoInvalida("O aluno atingiu o limite máximo de inscrições nesta disciplina!");
+        }
     }
 
     public void verificarAlunoJaPossuiInscricao (Inscricao inscricao) throws AlunoJaInscritoException {
         Aluno aluno = inscricao.getAluno();
         Disciplina disciplina = inscricao.getDisciplina();
 
-        if (inscricaoRepository.retornarAlunoInscritoDisciplina(aluno, disciplina) != null) throw new AlunoJaInscritoException("Aluno já inscrito nessa disciplina!");
+        if (inscricaoRepository.retornarAlunoInscritoDisciplina(aluno, disciplina) != null) {
+            throw new AlunoJaInscritoException("Aluno já inscrito nessa disciplina!");
+        }
     }
 
     public void verificarEditalEncerrado (Inscricao inscricao) throws InscricaoInvalida {
         Edital edital = inscricao.getDisciplina().getEdital();
 
-        if (edital.getStatus() == StatusEdital.ENCERRADO || !EditalValidator.validarDentroPeriodoInscricoes(edital.getDataInicio(), edital.getDataFinal())) throw new InscricaoInvalida("O edital está encerrado, não aceita mais incrições!");
+        if (edital.getStatus() == StatusEdital.ENCERRADO || !EditalValidator.validarDentroPeriodoInscricoes(edital.getDataInicio(), edital.getDataFinal())) {
+            throw new InscricaoInvalida("O edital está encerrado, não aceita mais incrições!");
+        }
     }
 
     public List<Inscricao> retornarInscricoesDaDisciplina (Disciplina disciplina) {
@@ -66,9 +74,14 @@ public class InscricaoService {
 
     public List<Inscricao> processarResultadoDaDisciplina (Disciplina disciplina) {
         List<Inscricao> listaInscricoes = retornarInscricoesDaDisciplina(disciplina);
+        ordenarPorPontuacao(listaInscricoes);
+        atribuirResultados(listaInscricoes, disciplina.getVagasRemunerada(), disciplina.getVagasVoluntarias());
+        listaInscricoes.forEach(inscricaoRepository::atualizar);
+        return listaInscricoes;
+    }
 
+    private void ordenarPorPontuacao(List<Inscricao> listaInscricoes) {
         listaInscricoes.sort((a, b) -> {
-
             if (a.getResultadoInscricao().equals(ResultadoInscricao.DESISTENTE) &&
                     !b.getResultadoInscricao().equals(ResultadoInscricao.DESISTENTE)) {
                 return 1;
@@ -95,27 +108,24 @@ public class InscricaoService {
 
             return Double.compare(pontuacao2, pontuacao1);
         });
+    }
 
-        int vagasRemuneradas = disciplina.getVagasRemunerada();
-        int vagasVoluntarias = disciplina.getVagasVoluntarias();
+    private void atribuirResultados(List<Inscricao> listaInscricoes, int vagasRemuneradas, int vagasVoluntarias) {
+        for (int i = 0; i < listaInscricoes.size(); i++) {
+            Inscricao e = listaInscricoes.get(i);
 
-        listaInscricoes.forEach(e -> {
-            int posicao = listaInscricoes.indexOf(e) + 1;
-
-            if (e.getResultadoInscricao() != ResultadoInscricao.DESISTENTE) {
-                if (posicao <= vagasRemuneradas) {
-                    e.setResultadoInscricao(ResultadoInscricao.APROVADO_BOLSA);
-                }
-
-                else if (posicao <= vagasRemuneradas + vagasVoluntarias)  {
-                    e.setResultadoInscricao(ResultadoInscricao.APROVADO_VOLUNTARIO);
-                }
+            if (e.getResultadoInscricao() == ResultadoInscricao.DESISTENTE) {
+                continue;
             }
 
-            inscricaoRepository.atualizar(e);
-        });
+            int posicao = i + 1;
 
-        return listaInscricoes;
+            if (posicao <= vagasRemuneradas) {
+                e.setResultadoInscricao(ResultadoInscricao.APROVADO_BOLSA);
+            } else if (posicao <= vagasRemuneradas + vagasVoluntarias) {
+                e.setResultadoInscricao(ResultadoInscricao.APROVADO_VOLUNTARIO);
+            }
+        }
     }
 
     public List<Inscricao> retornarTodasInscricoes () {
@@ -135,12 +145,13 @@ public class InscricaoService {
 
     public List<Inscricao> retornarAprovacoesAluno (Aluno aluno) {
         List<Inscricao> listaInscricoesAluno = inscricaoRepository.retornarInscricoesDoAluno(aluno);
-
         List<Inscricao> listaAprovacoesAluno = new ArrayList<>();
 
         listaInscricoesAluno.forEach(e -> {
             if ((e.getResultadoInscricao() == ResultadoInscricao.APROVADO_BOLSA || e.getResultadoInscricao() == ResultadoInscricao.APROVADO_VOLUNTARIO)
-                    && e.getDisciplina().getEdital().getStatus() == StatusEdital.RESULTADO_FINAL) listaAprovacoesAluno.add(e);
+                    && e.getDisciplina().getEdital().getStatus() == StatusEdital.RESULTADO_FINAL) {
+                listaAprovacoesAluno.add(e);
+            }
         });
 
         return listaAprovacoesAluno;
