@@ -4,26 +4,12 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "disciplina")
 public class Disciplina {
 
-    @Column
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @Column(name = "nome_disciplina", nullable = false)
     private String nomeDisciplina;
-
-    @Column(name = "vagas_remuneradas", nullable = false)
     private Integer vagasRemunerada;
-
-    @Column(name = "vagas_voluntarias", nullable = false)
     private Integer vagasVoluntarias;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_edital")
     private Edital edital;
 
     public Disciplina () {}

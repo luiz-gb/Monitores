@@ -2,18 +2,17 @@
              version="3.1">
 
     <persistence-unit name="monitoriaPU">
+
         <class>model.Aluno</class>
         <class>model.Coordenador</class>
-        <class>model.Edital</class>
-        <class>model.Disciplina</class>
         <class>model.Inscricao</class>
 
         <properties>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:monitoria.db"/>
-            <property name="jakarta.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
-
-            <property name="hibernate.dialect" value="org.hibernate.community.dialect.SQLiteDialect"/>
-
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/monitoria"/>
+            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
+            <property name="jakarta.persistence.jdbc.password" value="postgres"/>
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>

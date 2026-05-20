@@ -11,7 +11,6 @@ import java.util.UUID;
 public class Inscricao {
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
@@ -19,8 +18,7 @@ public class Inscricao {
     @JoinColumn(name = "id_aluno", nullable = false)
     private Aluno aluno;
 
-    @ManyToOne
-    @JoinColumn(name = "id_disciplina", nullable = false)
+    @Column(name = "id_disciplina", nullable = false)
     private Disciplina disciplina;
 
     @Column(name = "data_inscricao")

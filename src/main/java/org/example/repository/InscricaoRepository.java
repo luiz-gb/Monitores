@@ -74,6 +74,7 @@ public class InscricaoRepository {
         }
     }
 
+    // falta passar pro mongo
     public Inscricao retornarAlunoInscritoDisciplina (Aluno aluno, Disciplina disciplina) {
         EntityManager em = JPAUtil.getEntityManager();
 
@@ -94,6 +95,7 @@ public class InscricaoRepository {
         }
     }
 
+    // falta passar pro mongo
     public List<Inscricao> retornarInscricoesNaDisciplina (Disciplina disciplina) {
         EntityManager em = JPAUtil.getEntityManager();
 
@@ -112,6 +114,8 @@ public class InscricaoRepository {
             em.close();
         }
     }
+
+    // falta passar pro mongo
     public List<Inscricao> retornarInscricoesDoEdital (Edital edital) {
         EntityManager em = JPAUtil.getEntityManager();
 

@@ -1,7 +1,6 @@
 package org.example.model;
 
 import jakarta.persistence.*;
-import org.example.enums.TipoPerfil;
 
 import java.util.UUID;
 
