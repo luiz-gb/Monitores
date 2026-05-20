@@ -1,17 +1,16 @@
 package org.example.model;
 
-import jakarta.persistence.*;
 import org.example.enums.StatusEdital;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class Edital {
 
     private UUID id;
-    private LocalDate dataInicio;
-    private LocalDate dataFinal;
+    private Date dataInicio;
+    private Date dataFinal;
     private int maximoInscricoesPorAluno;
     private Double pesoCre;
     private Double pesoMedia;
@@ -20,7 +19,7 @@ public class Edital {
 
     public Edital () {}
 
-    public Edital(UUID id, LocalDate dataInicio, LocalDate dataFinal, int maximoInscricoesPorAluno, double pesoCre, double pesoMedia) {
+    public Edital(UUID id, Date dataInicio, Date dataFinal, int maximoInscricoesPorAluno, double pesoCre, double pesoMedia) {
         this.id = id;
         this.dataInicio = dataInicio;
         this.dataFinal = dataFinal;
@@ -37,19 +36,19 @@ public class Edital {
         this.id = id;
     }
 
-    public LocalDate getDataInicio() {
+    public Date getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(LocalDate dataInicio) {
+    public void setDataInicio(Date dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public LocalDate getDataFinal() {
+    public Date getDataFinal() {
         return dataFinal;
     }
 
-    public void setDataFinal(LocalDate dataFinal) {
+    public void setDataFinal(Date dataFinal) {
         this.dataFinal = dataFinal;
     }
 

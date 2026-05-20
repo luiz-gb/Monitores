@@ -1,46 +1,27 @@
 package org.example.model;
 
-import jakarta.persistence.*;
 import org.example.enums.ResultadoInscricao;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
-@Entity
-@Table(name = "inscricao")
 public class Inscricao {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @ManyToOne
-    @JoinColumn(name = "id_aluno", nullable = false)
-    private Aluno aluno;
-
-    @Column(name = "id_disciplina", nullable = false)
+    private UUID alunoId;
     private Disciplina disciplina;
-
-    @Column(name = "data_inscricao")
-    private LocalDateTime dataInscricao;
-
-    @Column(name = "cre_aluno", nullable = false)
+    private Date dataInscricao;
     private Double alunoCRE;
-
-    @Column(name = "media_aluno", nullable = false)
     private Double alunoMedia;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "resultado_inscricao", nullable = false)
     private ResultadoInscricao resultadoInscricao;
 
     public Inscricao () {
 
     }
 
-    public Inscricao(UUID id, Aluno aluno, Disciplina disciplina, LocalDateTime dataInscricao, ResultadoInscricao resultadoInscricao, Double alunoCRE, Double alunoMedia) {
+    public Inscricao(UUID id, UUID alunoId, Disciplina disciplina, Date dataInscricao, ResultadoInscricao resultadoInscricao, Double alunoCRE, Double alunoMedia) {
         this.id = id;
-        this.aluno = aluno;
+        this.alunoId = alunoId;
         this.disciplina = disciplina;
         this.dataInscricao = dataInscricao;
         this.resultadoInscricao = resultadoInscricao;
@@ -56,12 +37,12 @@ public class Inscricao {
         this.id = id;
     }
 
-    public Aluno getAluno() {
-        return aluno;
+    public UUID getAlunoId() {
+        return alunoId;
     }
 
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
+    public void setAlunoId(UUID alunoId) {
+        this.alunoId = alunoId;
     }
 
     public Disciplina getDisciplina() {
@@ -72,11 +53,11 @@ public class Inscricao {
         this.disciplina = disciplina;
     }
 
-    public LocalDateTime getDataInscricao() {
+    public Date getDataInscricao() {
         return dataInscricao;
     }
 
-    public void setDataInscricao(LocalDateTime dataInscricao) {
+    public void setDataInscricao(Date dataInscricao) {
         this.dataInscricao = dataInscricao;
     }
 

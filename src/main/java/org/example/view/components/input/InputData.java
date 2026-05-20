@@ -9,6 +9,7 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 public class InputData extends JFormattedTextField {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -37,7 +38,7 @@ public class InputData extends JFormattedTextField {
         ));
     }
 
-    public LocalDate getData() throws DateTimeParseException {
+    public Date getData() throws DateTimeParseException {
         String texto = getText();
         if (texto.contains("_")) {
             throw new DateTimeParseException("Data incompleta", texto, 0);

@@ -2,6 +2,7 @@ package org.example.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Disciplina {
@@ -10,6 +11,7 @@ public class Disciplina {
     private String nomeDisciplina;
     private Integer vagasRemunerada;
     private Integer vagasVoluntarias;
+    private List<Inscricao> inscricoes;
     private Edital edital;
 
     public Disciplina () {}
@@ -60,6 +62,14 @@ public class Disciplina {
 
     public void setEdital(Edital idEdital) {
         this.edital = idEdital;
+    }
+
+    public List<Inscricao> getInscricoes() {
+        return inscricoes;
+    }
+
+    public void setInscricoes(List<Inscricao> inscricoes) {
+        this.inscricoes = inscricoes;
     }
 
     @Override

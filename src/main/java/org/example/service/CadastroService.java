@@ -11,7 +11,7 @@ import org.example.repository.AlunoRepository;
 import org.example.repository.CoordenaorRepository;
 import org.example.repository.EditalRepository;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -110,7 +110,7 @@ public class CadastroService {
      *
      * @throws ListaVaziaException Caso a lista de disciplinas esteja vazia.
      */
-    public void cadastrarEdital(LocalDate dataInicio, LocalDate dataFinal, int maximoInscricoes,
+    public void cadastrarEdital(Date dataInicio, Date dataFinal, int maximoInscricoes,
                                 double pesoCre, double pesoMedia, List<Disciplina> listaDisciplinas)
             throws ListaVaziaException {
 

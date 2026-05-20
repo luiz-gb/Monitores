@@ -24,6 +24,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Date;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -382,8 +383,8 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
             String pesoCre = campoPesoCre.getText();
             String pesoMedia = campoPesoMedia.getText();
 
-            LocalDate dataInicio = campoDataInicio.getData();
-            LocalDate dataFinal = campoDataFim.getData();
+            Date dataInicio = campoDataInicio.getData();
+            Date dataFinal = campoDataFim.getData();
 
             if (LocalDate.now().isBefore(edital.getDataInicio())) {
                 EditalValidator.validarDataInicio(dataInicio);

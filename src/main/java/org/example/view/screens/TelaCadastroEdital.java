@@ -21,10 +21,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TelaCadastroEdital extends BaseTela {
@@ -205,8 +205,8 @@ public class TelaCadastroEdital extends BaseTela {
             String pesoCre = campoPesoCre.getText();
             String pesoMedia = campoPesoMedia.getText();
 
-            LocalDate dataInicio = campoDataInicio.getData();
-            LocalDate dataFinal = campoDataFinal.getData();
+            Date dataInicio = campoDataInicio.getData();
+            Date dataFinal = campoDataFinal.getData();
 
             EditalValidator.validarDatas(dataInicio, dataFinal);
             EditalValidator.validarMaxInscricoes(maxInscricoes);
