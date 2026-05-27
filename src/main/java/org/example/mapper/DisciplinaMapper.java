@@ -9,14 +9,13 @@ import java.util.List;
 import java.util.UUID;
 
 public class DisciplinaMapper {
-    public static Document toDocument (Disciplina disciplina, List<Document> inscricoes) {
+    public static Document toDocument (Disciplina disciplina) {
         Document documentDisciplina = new Document();
 
         documentDisciplina.append("id", disciplina.getId().toString());
         documentDisciplina.append("nomeDisciplina", disciplina.getNomeDisciplina());
         documentDisciplina.append("vagasRemuneradas", disciplina.getVagasRemunerada());
         documentDisciplina.append("vagasVoluntarias", disciplina.getVagasVoluntarias());
-        documentDisciplina.append("inscricoes", inscricoes);
 
 
         return documentDisciplina;
@@ -30,16 +29,18 @@ public class DisciplinaMapper {
         disciplina.setVagasRemunerada(disciplinaDocument.getInteger("vagasRemuneradas"));
         disciplina.setVagasVoluntarias(disciplinaDocument.getInteger("vagasVoluntarias"));
 
-        List<Document> inscricoesDocument = disciplinaDocument.getList("inscricoes", Document.class);
+//        List<Document> inscricoesDocument = disciplinaDocument.getList("inscricoes", Document.class);
+//
+//        List<Inscricao> listaInscricoes = new ArrayList<>();
+//
+//        for (Document inscricaoDocument : inscricoesDocument) {
+//            Inscricao inscricao = InscricaoMapper.toEntity(inscricaoDocument);
+//            listaInscricoes.add(inscricao);
+//        }
+//
+//        disciplina.setInscricoes(listaInscricoes);
 
-        List<Inscricao> listaInscricoes = new ArrayList<>();
-
-        for (Document inscricaoDocument : inscricoesDocument) {
-            Inscricao inscricao = InscricaoMapper.toEntity(inscricaoDocument);
-            listaInscricoes.add(inscricao);
-        }
-
-        disciplina.setInscricoes(listaInscricoes);
+        // falta setar a lista de inscricoes
 
         return disciplina;
     }

@@ -9,20 +9,22 @@ public class Inscricao {
 
     private UUID id;
     private UUID alunoId;
-    private Disciplina disciplina;
+    private UUID disciplinaId;
     private Date dataInscricao;
     private Double alunoCRE;
     private Double alunoMedia;
     private ResultadoInscricao resultadoInscricao;
+    private Aluno aluno;
+    private Disciplina disciplina;
 
     public Inscricao () {
 
     }
 
-    public Inscricao(UUID id, UUID alunoId, Disciplina disciplina, Date dataInscricao, ResultadoInscricao resultadoInscricao, Double alunoCRE, Double alunoMedia) {
+    public Inscricao(UUID id, UUID alunoId, UUID disciplinaId, Date dataInscricao, ResultadoInscricao resultadoInscricao, Double alunoCRE, Double alunoMedia) {
         this.id = id;
         this.alunoId = alunoId;
-        this.disciplina = disciplina;
+        this.disciplinaId = disciplinaId;
         this.dataInscricao = dataInscricao;
         this.resultadoInscricao = resultadoInscricao;
         this.alunoCRE = alunoCRE;
@@ -45,12 +47,12 @@ public class Inscricao {
         this.alunoId = alunoId;
     }
 
-    public Disciplina getDisciplina() {
-        return disciplina;
+    public UUID getDisciplinaId() {
+        return disciplinaId;
     }
 
-    public void setDisciplina(Disciplina disciplina) {
-        this.disciplina = disciplina;
+    public void setDisciplinaId(UUID id) {
+        this.disciplinaId = id;
     }
 
     public Date getDataInscricao() {
@@ -83,5 +85,21 @@ public class Inscricao {
 
     public void setAlunoMedia(Double alunoMedia) {
         this.alunoMedia = alunoMedia;
+    }
+
+    public Aluno getAluno() {
+        return aluno;
+    }
+
+    public void setAluno(Aluno aluno) {
+        this.aluno = aluno;
+    }
+
+    public Disciplina getDisciplina() {
+        return disciplina;
+    }
+
+    public void setDisciplina(Disciplina disciplina) {
+        this.disciplina = disciplina;
     }
 }

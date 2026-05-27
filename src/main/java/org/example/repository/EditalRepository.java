@@ -27,6 +27,7 @@ public class EditalRepository {
         this.db = MongoConnection.getDatabase();
     }
 
+    //  Falta verificar se deu problema no service e telas
     public void salvar (Edital edital) {
         MongoCollection<Document> editais = db.getCollection("editais");
         List<Document> disciplinasDoc = retornarListaDeDisciplinas(edital);
@@ -40,6 +41,7 @@ public class EditalRepository {
         editais.insertOne(editalDoc);
     }
 
+    //  Falta verificar se deu problema no service e telas
     public void editar (Edital edital) {
         MongoCollection<Document> editais = db.getCollection("editais");
 
@@ -49,7 +51,7 @@ public class EditalRepository {
 
         Document editalDoc = EditalMapper.toDocument(edital, disciplinasDoc);
 
-        editais.replaceOne(new Document("id", edital.getId()), editalDoc);
+        editais.replaceOne(new Document("id", edital.getId().toString()), editalDoc);
     }
 
     // falta passar pro mongo
@@ -69,17 +71,7 @@ public class EditalRepository {
         }
     }
 
-    // Tive que fazer essa busca pra salvar uma inscrição dentro da disciplina. (Luiz)
-    public Edital retornarEditalPorDisplina (UUID id) {
-        MongoCollection<Document> editais = db.getCollection("editais");
-
-        Document editalEncontrado = editais.find(Filters.eq("listaDisciplinas.id", id)).first();
-
-        if (editalEncontrado == null) return null;
-
-        return EditalMapper.toEntity(editalEncontrado);
-    }
-
+    //  Falta verificar se deu problema no service e telas
     private List<Document> retornarListaDeDisciplinas (Edital edital) {
         List<Document> disciplinasDoc = new ArrayList<>();
 
@@ -88,19 +80,7 @@ public class EditalRepository {
                 disciplina.setId(UUID.randomUUID());
             }
 
-            List<Document> inscricoesDoc = new ArrayList<>();
-
-            for (Inscricao inscricao : disciplina.getInscricoes()) {
-                if (inscricao.getId() == null) {
-                    inscricao.setId(UUID.randomUUID());
-                }
-
-                Document inscricaoDoc = InscricaoMapper.toDocument(inscricao);
-
-                inscricoesDoc.add(inscricaoDoc);
-            }
-
-            Document documentDisciplina = DisciplinaMapper.toDocument(disciplina, inscricoesDoc);
+            Document documentDisciplina = DisciplinaMapper.toDocument(disciplina);
 
             disciplinasDoc.add(documentDisciplina);
         }

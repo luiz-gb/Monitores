@@ -13,7 +13,8 @@ public class InscricaoMapper {
         Document documentDisciplina = new Document();
 
         documentDisciplina.append("id", inscricao.getId().toString());
-        documentDisciplina.append("alunoId", inscricao.getAlunoId());
+        documentDisciplina.append("alunoId", inscricao.getAluno().getId());
+        documentDisciplina.append("disciplinaId", inscricao.getDisciplina().getId());
         documentDisciplina.append("dataInscricao", inscricao.getDataInscricao());
         documentDisciplina.append("resultadoInscricao", inscricao.getResultadoInscricao().toString());
         documentDisciplina.append("alunoCRE", inscricao.getAlunoCRE());
@@ -27,6 +28,7 @@ public class InscricaoMapper {
 
         inscricao.setId(UUID.fromString(inscricaoDocument.getString("id")));
         inscricao.setAlunoId(UUID.fromString(inscricaoDocument.getString("alunoId")));
+        inscricao.setDisciplinaId(UUID.fromString(inscricaoDocument.getString("disciplinaId")));
         inscricao.setDataInscricao(inscricaoDocument.getDate("dataInscricao"));
         inscricao.setResultadoInscricao(ResultadoInscricao.valueOf(inscricaoDocument.getString("resultadoInscricao")));
         inscricao.setAlunoCRE(inscricaoDocument.getDouble("alunoCRE"));
