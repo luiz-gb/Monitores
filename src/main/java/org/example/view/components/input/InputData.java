@@ -6,13 +6,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 public class InputData extends JFormattedTextField {
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
 
     public InputData() {
         super(criarMascara());
@@ -38,11 +40,12 @@ public class InputData extends JFormattedTextField {
         ));
     }
 
-    public Date getData() throws DateTimeParseException {
+    public Date getData() throws ParseException {
         String texto = getText();
+
         if (texto.contains("_")) {
-            throw new DateTimeParseException("Data incompleta", texto, 0);
+            throw new ParseException("Data incompleta", 0);
         }
-        return LocalDate.parse(texto, FORMATTER);
+        return FORMATTER.parse(texto);
     }
 }

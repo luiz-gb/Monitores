@@ -51,7 +51,7 @@ public class EditalRepository {
 
         Document editalDoc = EditalMapper.toDocument(edital, disciplinasDoc);
 
-        editais.replaceOne(new Document("id", edital.getId().toString()), editalDoc);
+        editais.replaceOne(new Document("_id", edital.getId().toString()), editalDoc);
     }
 
     // falta passar pro mongo
@@ -71,7 +71,6 @@ public class EditalRepository {
         }
     }
 
-    //  Falta verificar se deu problema no service e telas
     private List<Document> retornarListaDeDisciplinas (Edital edital) {
         List<Document> disciplinasDoc = new ArrayList<>();
 

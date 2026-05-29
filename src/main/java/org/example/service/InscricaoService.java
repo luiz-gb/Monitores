@@ -14,6 +14,7 @@ import org.example.validator.EditalValidator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class InscricaoService {
@@ -27,7 +28,7 @@ public class InscricaoService {
         Inscricao inscricao = new Inscricao();
         inscricao.setAluno(aluno);
         inscricao.setDisciplina(disciplina);
-        inscricao.setDataInscricao(LocalDateTime.now());
+        inscricao.setDataInscricao(new Date());
         inscricao.setAlunoCRE(cre);
         inscricao.setAlunoMedia(media);
         inscricao.setResultadoInscricao(ResultadoInscricao.PENDENTE);

@@ -14,7 +14,7 @@ public class EditalMapper {
     public static Document toDocument (Edital edital, List<Document> disciplinasDoc) {
         Document editalDoc = new Document();
 
-        editalDoc.append("id", edital.getId().toString());
+        editalDoc.append("_id", edital.getId().toString());
         editalDoc.append("dataInicio", edital.getDataInicio());
         editalDoc.append("dataFinal", edital.getDataFinal());
         editalDoc.append("maximoInscricoesPorAluno", edital.getMaximoInscricoesPorAluno());
@@ -29,7 +29,7 @@ public class EditalMapper {
     public static Edital toEntity(Document editalDocument) {
         Edital edital = new Edital();
 
-        edital.setId(UUID.fromString(editalDocument.getString("id")));
+        edital.setId(UUID.fromString(editalDocument.getString("_id")));
         edital.setDataInicio(editalDocument.getDate("dataInicio"));
         edital.setDataFinal(editalDocument.getDate("dataFinal"));
         edital.setMaximoInscricoesPorAluno(editalDocument.getInteger("maximoInscricoesPorAluno"));

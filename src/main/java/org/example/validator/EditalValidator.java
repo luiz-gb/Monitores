@@ -42,16 +42,15 @@ public class EditalValidator {
     }
 
     public static void validarDataInicio (Date dataInicio) throws DataInvalidaException {
-        LocalDate dataAtual = LocalDate.now();
-        if (dataAtual.isAfter(dataInicio)) throw new DataInvalidaException("A data de início só pode ser alterada antes dela começar.");
+        if (new Date().after(dataInicio)) throw new DataInvalidaException("A data de início só pode ser alterada antes dela começar.");
     }
 
     public static void validarDataFinal (Date dataFinal) throws DataInvalidaException {
-        if (dataFinal.isBefore(LocalDate.now())) throw new DataInvalidaException("A nova data final não pode ser no passado.");
+        if (dataFinal.before(new Date())) throw new DataInvalidaException("A nova data final não pode ser no passado.");
     }
 
     public static void validarDatas (Date dataInicio, Date dataFinal) throws DataInvalidaException {
-        if (!dataFinal.isAfter(dataInicio)) throw new DataInvalidaException("A data final deve ser maior que a data de início!");
+        if (!dataFinal.after(dataInicio)) throw new DataInvalidaException("A data final deve ser maior que a data de início!");
     }
 
     public static void validarMaxInscricoesEditar (int numeroAntigo, int numeroNovo) throws CampoInvalidoException {
@@ -59,9 +58,8 @@ public class EditalValidator {
     }
 
     public static Boolean validarDentroPeriodoInscricoes (Date dataInicio, Date dataFinal) throws DataInvalidaException{
-        LocalDate dataAtual = LocalDate.now();
 
-        if (dataAtual.isBefore(dataInicio) || dataAtual.isAfter(dataFinal)) {
+        if (new Date().before(dataInicio) || new Date().after(dataFinal)) {
             return false;
         }
 
@@ -69,8 +67,6 @@ public class EditalValidator {
     }
 
     public static void validarCancelarEncerramentoEdital (Date dataFinal) {
-        LocalDate dataAtual = LocalDate.now();
-
-        if (dataFinal.isBefore(dataAtual)) throw new DataInvalidaException("O encerramento do edital não pode ser cancelado, a data final já passou!");
+        if (dataFinal.before(new Date())) throw new DataInvalidaException("O encerramento do edital não pode ser cancelado, a data final já passou!");
     }
 }

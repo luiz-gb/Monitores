@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -89,9 +90,10 @@ public class TelaDetalharEditalSemResultadoAluno extends BaseTela {
     }
 
     private void preencherDadosEdital() {
-        DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        campoDataInicio.setText(edital.getDataInicio().format(formatadorData));
-        campoDataFim.setText(edital.getDataFinal().format(formatadorData));
+        SimpleDateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
+
+        campoDataInicio.setText(formatadorData.format(edital.getDataInicio()));
+        campoDataFim.setText(formatadorData.format(edital.getDataFinal()));
         campoMaxInscricoes.setText(String.valueOf(edital.getMaximoInscricoesPorAluno()));
         campoPesoCre.setText(String.valueOf(edital.getPesoCre()));
         campoPesoMedia.setText(String.valueOf(edital.getPesoMedia()));

@@ -24,6 +24,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.time.LocalDate;
@@ -138,7 +139,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
             JOptionPane.showMessageDialog(this, "Edição habilitada!");
         }
 
-        if (LocalDate.now().isBefore(edital.getDataInicio())) {
+        if (new Date().before(edital.getDataInicio())) {
             configurarInput(campoDataInicio, editando);
         }
 
@@ -166,10 +167,10 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
     }
 
     private void carregarValoresComponents () {
-        DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        SimpleDateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
 
-        campoDataInicio.setText(edital.getDataInicio().format(formatadorData));
-        campoDataFim.setText(edital.getDataFinal().format(formatadorData));
+        campoDataInicio.setText(formatadorData.format(edital.getDataInicio()));
+        campoDataFim.setText(formatadorData.format(edital.getDataFinal()));
         campoMaxInscricoes.setText(String.valueOf(edital.getMaximoInscricoesPorAluno()));
         campoPesoCre.setText(String.valueOf(edital.getPesoCre()));
         campoPesoMedia.setText(String.valueOf(edital.getPesoMedia()));
@@ -386,7 +387,7 @@ public class TelaDetalharEditalSemResultadoCoordenador extends BaseTela {
             Date dataInicio = campoDataInicio.getData();
             Date dataFinal = campoDataFim.getData();
 
-            if (LocalDate.now().isBefore(edital.getDataInicio())) {
+            if (new Date().before((edital.getDataInicio()))) {
                 EditalValidator.validarDataInicio(dataInicio);
             }
 

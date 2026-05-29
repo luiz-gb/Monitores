@@ -17,6 +17,7 @@ services:
     container_name: monitoriapgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_USER: admin
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "8081:80"    # http://localhost:8081 #admin@admin.com senha: admin

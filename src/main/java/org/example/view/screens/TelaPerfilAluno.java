@@ -17,6 +17,7 @@ import org.example.view.components.tables.TabelaPadrao;
 import org.example.view.components.text.LabelTexto;
 import org.example.view.components.text.LabelTitulo;
 
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class TelaPerfilAluno extends BaseTela {
         }
 
         List<Inscricao> listaAprovacoes = inscricaoService.retornarAprovacoesAluno(aluno);
-        DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        SimpleDateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
 
         listaAprovacoes.forEach(e -> {
             double pontuacao = CalcularPontuacao.calcularPontuacaoAluno(
@@ -116,7 +117,7 @@ public class TelaPerfilAluno extends BaseTela {
             Object[] linha = {
                     e.getDisciplina().getNomeDisciplina(),
                     String.valueOf(e.getResultadoInscricao()).toLowerCase(),
-                    e.getDataInscricao().format(formatadorData),
+                    formatadorData.format(e.getDataInscricao()),
                     String.valueOf(pontuacao)
             };
 

@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -119,10 +120,10 @@ public class TelaCadastroEdital extends BaseTela {
         btnCancelar = new BotaoSecundario("Cancelar");
 
         if (edital != null) {
-            DateTimeFormatter formatadorData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            SimpleDateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
 
-            campoDataFinal.setText(edital.getDataFinal().format(formatadorData));
-            campoDataInicio.setText(edital.getDataInicio().format(formatadorData));
+            campoDataFinal.setText(formatadorData.format(edital.getDataFinal()));
+            campoDataInicio.setText(formatadorData.format(edital.getDataInicio()));
             campoPesoCre.setText(String.valueOf(edital.getPesoCre()));
             campoPesoMedia.setText(String.valueOf(edital.getPesoMedia()));
             campoMaxInscricoes.setText(String.valueOf(edital.getMaximoInscricoesPorAluno()));

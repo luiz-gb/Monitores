@@ -49,7 +49,7 @@ public class InscricaoRepository {
 
         Document inscricaoDoc = InscricaoMapper.toDocument(inscricao);
 
-        editais.replaceOne(new Document("id", inscricao.getId().toString()), inscricaoDoc);
+        editais.replaceOne(new Document("_id", inscricao.getId().toString()), inscricaoDoc);
     }
 
     //  Falta verificar se deu problema no service e telas
@@ -66,45 +66,39 @@ public class InscricaoRepository {
     public int retornarQuantidadeInscricoesAluno (Aluno aluno, Edital edital) {
         MongoCollection<Document> inscricoes = db.getCollection("inscricoes");
 
-        List<UUID> disciplinaIds = edital.getListaDisciplinas().stream()
-                .map(Disciplina::getId)
+        List<String> disciplinaIds = edital.getListaDisciplinas().stream()
+                .map(d -> d.getId().toString())
                 .toList();
 
         // vendo quantas inscricoes batem seu id da disciplina com o id da lista com um certo aluno
         long quantidade = inscricoes.countDocuments(Filters.and(
-                Filters.eq("alunoId", aluno.getId()),
+                Filters.eq("alunoId", aluno.getId().toString()),
                 Filters.in("disciplinaId", disciplinaIds)
         ));
 
         return Integer.parseInt(String.valueOf(quantidade));
     }
 
-    // falta passar pro mongo
+    //  Falta verificar se deu problema no service e telas
     public Inscricao retornarAlunoInscritoDisciplina (Aluno aluno, Disciplina disciplina) {
-        EntityManager em = JPAUtil.getEntityManager();
+        MongoCollection<Document> inscricaoCollection = db.getCollection("inscricoes");
 
-        try {
-            return em.createQuery("select i from Inscricao i where i.aluno = :aluno and i.disciplina = :disciplina", Inscricao.class)
-                    .setParameter("aluno", aluno)
-                    .setParameter("disciplina", disciplina)
-                    .getSingleResult();
-        }
+        Document inscricaoDocument = inscricaoCollection.find(Filters.and(
+                Filters.eq("alunoId", aluno.getId().toString()),
+                Filters.eq("disciplinaId", disciplina.getId().toString())
+        )).first();
 
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+        if (inscricaoDocument == null) return null;
 
-        finally {
-            em.close();
-        }
+        return InscricaoMapper.toEntity(inscricaoDocument);
     }
 
     //  Falta verificar se deu problema no service e telas
     public List<Inscricao> retornarInscricoesNaDisciplina (Disciplina disciplina) {
         MongoCollection<Document> inscricoesCollection = db.getCollection("inscricoes");
 
-        List<Inscricao> inscricoes = inscricoesCollection.find(Filters.eq("disciplinaId", disciplina.getId()))
+        List<Inscricao> inscricoes = inscricoesCollection.find(Filters.eq("disciplinaId",
+                        disciplina.getId().toString()))
                 .map(InscricaoMapper::toEntity)
                 .into(new ArrayList<>());
 

@@ -5,7 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 
 public class MongoConnection {
-    private static final String URI = "mongodb://admin:admin@localhost:27017";
+    private static final String URI = "mongodb://admin:admin@localhost:27017/?authSource=admin";
     private static final MongoClient mongoClient = MongoClients.create(URI);
 
     public static MongoDatabase getDatabase () {
